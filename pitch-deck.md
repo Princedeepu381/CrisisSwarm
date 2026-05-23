@@ -64,12 +64,12 @@
 ## 🛝 Slide 6: System Architecture
 ### "Modern Cloud-Native Tech Stack"
 * **Points:**
-  * **Frontend & API:** Next.js 14 App Router + serverless server side logic.
+  * **Frontend & API:** Next.js 15 App Router + serverless server side logic.
   * **Persistence Layer:** Prisma Client + SQLite database for zero-config state management.
   * **Host & Security:** Azure Static Web Apps (CDN, HTTPS, Integrated Functions).
   * **Real-time Engine:** Server-Sent Events (SSE) streaming live logs and agent statuses to clients instantly.
 * **Visual Concept:** Interactive flow diagram from Telemetry Spikes -> Next.js API Routes -> In-Memory State/Prisma -> SSE Broadcast -> Frontend Clients.
-* **Presenter Script:** "CrisisSwarm is built on Next.js 14, using serverless API routes deployed on Azure Static Web Apps. Ephemeral telemetry and state reside in an optimized cache layer, backed by Prisma and SQLite. Real-time updates are pushed to the client using a high-throughput Server-Sent Events stream, ensuring operators get instant telemetry data."
+* **Presenter Script:** "CrisisSwarm is built on Next.js 15, using serverless API routes deployed on Azure Static Web Apps. Ephemeral telemetry and state reside in an optimized cache layer, backed by Prisma and SQLite. Real-time updates are pushed to the client using a high-throughput Server-Sent Events stream, ensuring operators get instant telemetry data."
 
 ---
 

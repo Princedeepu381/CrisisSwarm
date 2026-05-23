@@ -46,3 +46,13 @@ Thumbs.db
 # Logs
 logs/
 *.log
+
+# TypeScript build cache
+tsconfig.tsbuildinfo
+
+# SQLite databases
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+

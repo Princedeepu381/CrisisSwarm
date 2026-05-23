@@ -23,14 +23,17 @@
 
 <br/>
 
-🔗 **[Live Demo](https://calm-ocean-08f5d1400.7.azurestaticapps.net)** &nbsp;·&nbsp; 📂 **[Repository](https://github.com/Princedeepu381/CrisisSwarm)** &nbsp;·&nbsp; 🎯 **[Pitch Deck](./pitch-deck.md)**
+🔗 **[Live Demo](https://calm-ocean-08f5d1400.7.azurestaticapps.net)** &nbsp;·&nbsp; 📂 **[Repository](https://github.com/Princedeepu381/CrisisSwarm)** &nbsp;·&nbsp; 🎯 **[Pitch Deck](./pitch-deck.md)** &nbsp;·&nbsp; 🎥 **[Demo Script](./demo-script.md)**
 
 </div>
+
+> 🏆 **Hackathon Login Credentials:** Email: `admin@crisisswarm.io` · Password: `CrisisSwarm2026!`
 
 ---
 
 ## 📋 Table of Contents
 
+- [🎥 Live Demo Walkthrough](#-live-demo-walkthrough)
 - [Problem Statement](#-problem-statement)
 - [Solution Overview](#-solution-overview)
 - [Architecture](#-architecture)
@@ -43,6 +46,27 @@
 - [API Documentation](#-api-documentation)
 - [AI Tools Disclosure](#-ai-tools-disclosure)
 - [Team](#-team)
+
+---
+
+## 🎥 Live Demo Walkthrough
+
+**[→ Open Live Demo](https://calm-ocean-08f5d1400.7.azurestaticapps.net)**
+
+Follow these steps to experience the full autonomous incident response lifecycle in **~60 seconds**:
+
+| Step | Page | Action | What You'll See |
+|------|------|--------|-----------------|
+| 1 | `/login` | Sign in with the credentials above | Azure AD-style SSO portal with MFA indicator |
+| 2 | `/dashboard` | View the Command Center | Live KPIs, AI Advisory banner, global cloud regions map |
+| 3 | `/dashboard` | Click **"Simulate Crisis"** 🔴 | CPU/latency charts spike, new critical incident appears, swarm activates |
+| 4 | `/agents` | Watch the **Live Terminal Feed** | Real-time SSE logs stream from 6 specialized agents |
+| 5 | `/agents` | Click **"Stop Swarm"** then **"Resume Swarm"** | All agents suspend (crimson border) then recover — operator-in-loop guardrails |
+| 6 | `/incidents` | View the incident detail drawer | Watch status auto-advance: Detected → Investigating → Mitigating → Resolved |
+| 7 | `/analytics` | Check telemetry charts | Metrics normalize as incident resolves — crisis-correlated telemetry |
+| 8 | `/azure` | Review Azure Integration panel | All 10 capabilities green ✅, live health badge, architecture flow |
+
+> 💡 **No setup required.** The app runs in high-fidelity simulation mode if Azure OpenAI credentials are not configured — fully functional for judges out of the box.
 
 ---
 
