@@ -32,13 +32,30 @@ CrisisSwarm solves this by implementing an active observability pipeline coupled
 
 ```mermaid
 flowchart TD
+
     U[👤 Users / Enterprise Systems]
+
     A[☁️ Azure App Service<br/>Node.js Web Application]
+
     B[📊 Application Insights<br/>Telemetry & Monitoring]
+
     C[🚨 Azure Monitor Alerts<br/>Smart Detection Rules]
+
     D[🧠 CrisisSwarm Monitoring Engine<br/>Incident Analysis Layer]
-    E[🤖 Swarm Agent Fleet<br/>Autonomous Remediation]
-    F[🛠 Active Remediation<br/>Infrastructure Repairs]
+
+    E[🤖 Future AI Swarm Agents<br/>Autonomous Response System]
+
+    F[🛠 Suggested Remediation<br/>Incident Response Actions]
+
+    G[📂 Log Analytics Workspace]
+
+    H[📜 Diagnostic Logs]
+
+    I[❤️ Health Monitoring]
+
+    J[❌ Failed Request Detection]
+
+    K[📡 Real-Time Telemetry]
 
     U --> A
     A --> B
@@ -47,9 +64,15 @@ flowchart TD
     D --> E
     E --> F
 
-    C -->|Telemetry Streaming| B
+    B --> G
+    B --> H
+    B --> I
+    B --> J
+    B --> K
+
+    C -->|Anomaly Detection| D
     D -->|Alert Orchestration| E
-    E -->|Self-Healing Pipeline| F
+    E -->|Autonomous Response Pipeline| F
 ```
 
 ---
