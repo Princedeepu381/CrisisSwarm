@@ -43,6 +43,10 @@ const config: Config = {
         'glow-blue': '0 0 20px rgba(0, 120, 212, 0.3)',
         'glow-cyan': '0 0 20px rgba(0, 194, 255, 0.2)',
         'glow-sm': '0 0 10px rgba(0, 120, 212, 0.15)',
+        'glow-red': '0 0 20px rgba(255, 77, 77, 0.3)',
+        'glow-green': '0 0 20px rgba(34, 197, 94, 0.3)',
+        'glow-purple': '0 0 20px rgba(168, 85, 247, 0.3)',
+        'glow-red/5': '0 0 20px rgba(255, 77, 77, 0.05)',
       },
       borderRadius: {
         'glass': '12px',

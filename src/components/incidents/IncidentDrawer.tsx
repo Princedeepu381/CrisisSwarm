@@ -14,7 +14,7 @@ interface Incident {
   title: string;
   description: string;
   severity: 'critical' | 'high' | 'medium' | 'low';
-  status: 'active' | 'investigating' | 'resolved';
+  status: 'active' | 'investigating' | 'resolved' | 'awaiting_approval';
   created_at: string;
   resolved_at: string | null;
   affected_service?: string;
@@ -27,6 +27,7 @@ interface IncidentDrawerProps {
   incident: Incident | null;
   onClose: () => void;
   onResolve: (id: string) => void;
+  onApprove?: (id: string) => void;
 }
 
 const severityStyles: Record<string, { badge: string; glow: string; label: string }> = {
@@ -49,7 +50,7 @@ function fmtTime(iso: string) {
   return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
-export default function IncidentDrawer({ incident, onClose, onResolve }: IncidentDrawerProps) {
+export default function IncidentDrawer({ incident, onClose, onResolve, onApprove }: IncidentDrawerProps) {
   const sev = incident ? severityStyles[incident.severity] ?? severityStyles.low : null;
 
   return (
@@ -205,15 +206,38 @@ export default function IncidentDrawer({ incident, onClose, onResolve }: Inciden
                 <LucideIcons.ArrowUpCircle className="w-4 h-4 inline mr-2" />
                 Escalate
               </button>
-              {incident.status !== 'resolved' && (
-                <button
-                  id="btn-resolve"
-                  onClick={() => onResolve(incident.id)}
-                  className="flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold bg-cs-accent-success/20 border border-cs-accent-success/40 text-cs-accent-success hover:bg-cs-accent-success/30 transition-all duration-200"
-                >
-                  <LucideIcons.CheckCircle className="w-4 h-4 inline mr-2" />
-                  Mark Resolved
-                </button>
+              {incident.status === 'awaiting_approval' ? (
+                <>
+                  <button
+                    id="btn-reject-override"
+                    onClick={() => onResolve(incident.id)}
+                    className="flex-1 py-2.5 px-3 rounded-lg text-xs font-semibold bg-cs-accent-danger/25 border border-cs-accent-danger/40 text-cs-accent-danger hover:bg-cs-accent-danger/35 transition-all duration-200"
+                  >
+                    <LucideIcons.AlertTriangle className="w-4 h-4 inline mr-1" />
+                    Reject & Override
+                  </button>
+                  {onApprove && (
+                    <button
+                      id="btn-approve-swarm"
+                      onClick={() => onApprove(incident.id)}
+                      className="flex-1 py-2.5 px-3 rounded-lg text-xs font-semibold bg-purple-500/20 border border-purple-400/40 text-purple-300 hover:bg-purple-500/30 transition-all duration-200 shadow-glow-purple"
+                    >
+                      <LucideIcons.ShieldAlert className="w-4 h-4 inline mr-1 animate-pulse" />
+                      Approve Swarm
+                    </button>
+                  )}
+                </>
+              ) : (
+                incident.status !== 'resolved' && (
+                  <button
+                    id="btn-resolve"
+                    onClick={() => onResolve(incident.id)}
+                    className="flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold bg-cs-accent-success/20 border border-cs-accent-success/40 text-cs-accent-success hover:bg-cs-accent-success/30 transition-all duration-200"
+                  >
+                    <LucideIcons.CheckCircle className="w-4 h-4 inline mr-2" />
+                    Mark Resolved
+                  </button>
+                )
               )}
               <button
                 id="btn-close-drawer"

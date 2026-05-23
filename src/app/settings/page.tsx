@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import MainLayout from '@/components/layout/MainLayout';
 import GlassCard from '@/components/common/GlassCard';
@@ -32,17 +32,22 @@ function Toggle({ id, enabled, onChange }: ToggleProps) {
     <button
       id={id}
       onClick={() => onChange(!enabled)}
+      aria-checked={enabled}
+      role="switch"
       className={`
-        relative w-11 h-6 rounded-full transition-all duration-300 flex-shrink-0
-        ${enabled ? 'bg-cs-blue-500/80 shadow-glow-blue' : 'bg-cs-dark-700/80'}
-        border ${enabled ? 'border-cs-blue-400/40' : 'border-cs-blue-400/10'}
+        relative inline-flex w-11 h-6 rounded-full transition-all duration-300 flex-shrink-0 cursor-pointer
+        ${enabled
+          ? 'bg-[#0078d4] shadow-[0_0_10px_rgba(0,194,255,0.4)] border border-blue-400/40'
+          : 'bg-slate-700 border border-slate-600'
+        }
       `}
     >
       <motion.span
         layout
         animate={{ x: enabled ? 22 : 2 }}
+        initial={{ x: enabled ? 22 : 2 }}
         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-        className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm"
+        className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-md"
       />
     </button>
   );
@@ -140,7 +145,7 @@ export default function SettingsPage() {
   // Agent settings
   const [agents, setAgents] = useState({
     autoScaling:     true,
-    autoRemediation: true,
+    autoRemediation: false, // Start false so the user experiences human-in-the-loop approval
     anomalyDetect:   true,
     reportGeneration: false,
     maintenanceMode: false,
@@ -156,9 +161,37 @@ export default function SettingsPage() {
 
   const [saved, setSaved] = useState(false);
 
-  function handleSave() {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setAgents({
+            autoScaling: !!data.autoScaling,
+            autoRemediation: !!data.autoRemediation,
+            anomalyDetect: !!data.anomalyDetect,
+            reportGeneration: !!data.reportGeneration,
+            maintenanceMode: !!data.maintenanceMode,
+          });
+        }
+      })
+      .catch((e) => console.error('Failed to load settings:', e));
+  }, []);
+
+  async function handleSave() {
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(agents),
+      });
+      if (res.ok) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2500);
+      }
+    } catch (e) {
+      console.error('Failed to save settings:', e);
+    }
   }
 
   return (
@@ -357,7 +390,7 @@ export default function SettingsPage() {
         {/* Version info */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
           <div className="text-center py-6 border-t border-cs-blue-400/8">
-            <p className="text-xs text-cs-dark-200 opacity-30">CrisisSwarm v2.4.1 · Azure-powered · Built with Next.js 14</p>
+            <p className="text-xs text-cs-dark-200 opacity-30">CrisisSwarm v2.4.1 · Azure-powered · Built with Next.js 15</p>
           </div>
         </motion.div>
       </div>

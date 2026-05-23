@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 
 type Severity = 'critical' | 'high' | 'medium' | 'low';
-type Status = 'all' | 'active' | 'investigating' | 'resolved';
+type Status = 'all' | 'active' | 'investigating' | 'resolved' | 'awaiting_approval';
 
 interface IncidentFiltersProps {
   search: string;
@@ -28,6 +28,7 @@ const STATUSES: { value: Status; label: string }[] = [
   { value: 'all',           label: 'All Statuses'   },
   { value: 'active',        label: 'Active'         },
   { value: 'investigating', label: 'Investigating'  },
+  { value: 'awaiting_approval', label: 'Awaiting Approval' },
   { value: 'resolved',      label: 'Resolved'       },
 ];
 

@@ -19,7 +19,7 @@ const itemVariants = {
 };
 
 const AZURE_STACK = [
-  { icon: 'Server',      label: 'Runtime',         value: 'Next.js 14 Serverless API', color: 'text-cs-accent-success' },
+  { icon: 'Server',      label: 'Runtime',         value: 'Next.js 15 Serverless API', color: 'text-cs-accent-success' },
   { icon: 'Cloud',       label: 'Platform',        value: 'Azure Static Web Apps',    color: 'text-cs-blue-400'       },
   { icon: 'BarChart2',   label: 'Telemetry',       value: 'Dynamic Server Diagnostics', color: 'text-purple-400'         },
   { icon: 'Bell',        label: 'Alerting',        value: 'AI Swarm Coordinator',      color: 'text-orange-400'         },
@@ -34,10 +34,10 @@ const AZURE_FEATURES = [
   { icon: 'Eye',         label: 'Application telemetry',             done: true  },
   { icon: 'Bell',        label: 'FailedRequestsAlert configured',     done: true  },
   { icon: 'Clock',       label: 'ServerResponseTimeAlert configured', done: true  },
-  { icon: 'Database',    label: 'Database connectivity',             done: false },
-  { icon: 'Lock',        label: 'Authentication system',             done: false },
-  { icon: 'Cpu',         label: 'AI agent API endpoints',            done: false },
-  { icon: 'Wifi',        label: 'WebSocket real-time streaming',     done: false },
+  { icon: 'Database',    label: 'Database connectivity',             done: true  },
+  { icon: 'Lock',        label: 'Authentication system',             done: true  },
+  { icon: 'Cpu',         label: 'AI agent API endpoints',            done: true  },
+  { icon: 'Wifi',        label: 'WebSocket real-time streaming',     done: true  },
 ];
 
 export default function AzurePage() {

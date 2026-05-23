@@ -75,6 +75,43 @@ export default function Agents() {
     }
   };
 
+  const handleGlobalAction = async (action: 'stop_all' | 'continue_all') => {
+    setIsSyncing(true);
+    try {
+      const res = await fetch('/api/agents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.agents) setAgents(data.agents);
+        if (data.terminalLogs) setTerminalLogs(data.terminalLogs);
+      }
+    } catch (e) {
+      console.error(`Failed to trigger global swarm action ${action}:`, e);
+    } finally {
+      setTimeout(() => setIsSyncing(false), 500);
+    }
+  };
+
+  const handleToggleAgent = async (agentName: string) => {
+    try {
+      const res = await fetch('/api/agents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'toggle_agent', agentName }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.agents) setAgents(data.agents);
+        if (data.terminalLogs) setTerminalLogs(data.terminalLogs);
+      }
+    } catch (e) {
+      console.error('Failed to toggle agent state:', e);
+    }
+  };
+
   useEffect(() => {
     fetchAgentsData();
     const interval = setInterval(() => fetchAgentsData(false), 5000); // Poll every 5s
@@ -110,16 +147,40 @@ export default function Agents() {
                 </p>
               </div>
 
-              <motion.div className="flex items-center gap-2" whileHover={{ scale: 1.05 }}>
-                <button
-                  onClick={() => fetchAgentsData(true)}
-                  disabled={isSyncing}
-                  className="px-4 py-2 bg-cs-blue-500/20 border border-cs-blue-400/30 rounded-lg text-sm font-medium text-cs-blue-400 hover:bg-cs-blue-500/30 transition-all flex items-center gap-2"
-                >
-                  <LucideIcons.RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-                  {isSyncing ? 'Syncing...' : 'Sync Fleet'}
-                </button>
-              </motion.div>
+              <div className="flex items-center gap-3">
+                <motion.div whileHover={{ scale: 1.05 }}>
+                  <button
+                    onClick={() => handleGlobalAction('stop_all')}
+                    disabled={isSyncing}
+                    className="px-4 py-2 bg-cs-accent-danger/20 border border-cs-accent-danger/30 rounded-lg text-sm font-medium text-cs-accent-danger hover:bg-cs-accent-danger/30 transition-all flex items-center gap-2 shadow-lg hover:shadow-glow-red duration-300"
+                  >
+                    <LucideIcons.Octagon className="w-4 h-4" />
+                    Stop Swarm
+                  </button>
+                </motion.div>
+
+                <motion.div whileHover={{ scale: 1.05 }}>
+                  <button
+                    onClick={() => handleGlobalAction('continue_all')}
+                    disabled={isSyncing}
+                    className="px-4 py-2 bg-cs-accent-success/20 border border-cs-accent-success/30 rounded-lg text-sm font-medium text-cs-accent-success hover:bg-cs-accent-success/30 transition-all flex items-center gap-2 shadow-lg hover:shadow-glow-green duration-300"
+                  >
+                    <LucideIcons.Play className="w-4 h-4" />
+                    Resume Swarm
+                  </button>
+                </motion.div>
+
+                <motion.div className="flex items-center gap-2" whileHover={{ scale: 1.05 }}>
+                  <button
+                    onClick={() => fetchAgentsData(true)}
+                    disabled={isSyncing}
+                    className="px-4 py-2 bg-cs-blue-500/20 border border-cs-blue-400/30 rounded-lg text-sm font-medium text-cs-blue-400 hover:bg-cs-blue-500/30 transition-all flex items-center gap-2"
+                  >
+                    <LucideIcons.RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                    {isSyncing ? 'Syncing...' : 'Sync Fleet'}
+                  </button>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -168,7 +229,7 @@ export default function Agents() {
               Advanced autonomous agent monitoring with real-time performance metrics
             </p>
           </div>
-          <AgentGrid agents={agents} />
+          <AgentGrid agents={agents} onToggleAgent={handleToggleAgent} />
         </motion.div>
 
         {/* Advanced Monitoring Section */}

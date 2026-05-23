@@ -10,13 +10,15 @@ interface IncidentItem {
   severity: 'critical' | 'high' | 'medium' | 'low';
   title: string;
   description: string;
-  status: 'active' | 'investigating' | 'resolved';
+  status: 'active' | 'investigating' | 'resolved' | 'awaiting_approval';
   created_at: string;
   affected_service?: string;
 }
 
 interface IncidentFeedProps {
   incidents: IncidentItem[];
+  onApprove?: (id: string) => void;
+  onReject?: (id: string) => void;
 }
 
 const severityConfig: {
@@ -28,7 +30,7 @@ const severityConfig: {
   low: { color: 'text-cs-blue-400', bgColor: 'bg-cs-blue-400/10', icon: 'info' },
 };
 
-export default function IncidentFeed({ incidents }: IncidentFeedProps) {
+export default function IncidentFeed({ incidents, onApprove, onReject }: IncidentFeedProps) {
   return (
     <GlassCard className="p-6">
       <div className="mb-6">
@@ -96,6 +98,37 @@ export default function IncidentFeed({ incidents }: IncidentFeedProps) {
                       </span>
                     </div>
                   </div>
+
+                  {incident.status === 'awaiting_approval' && (
+                    <div className="mt-3 p-3 rounded-lg border border-purple-500/30 bg-purple-950/20 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 shadow-glow-purple">
+                      <div className="flex items-center gap-2">
+                        <LucideIcons.ShieldAlert className="w-4 h-4 text-purple-400 animate-pulse" />
+                        <span className="text-xs font-semibold text-purple-200">
+                          Swarm proposed action: Restart deployment containers
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (onReject) onReject(incident.id);
+                          }}
+                          className="px-3 py-1.5 rounded bg-cs-accent-danger/25 text-cs-accent-danger border border-cs-accent-danger/30 hover:bg-cs-accent-danger/45 text-[11px] font-bold transition-all"
+                        >
+                          Reject & Override
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (onApprove) onApprove(incident.id);
+                          }}
+                          className="px-3 py-1.5 rounded bg-purple-500/30 text-purple-300 border border-purple-400/40 hover:bg-purple-500/50 hover:shadow-glow-purple text-[11px] font-bold transition-all"
+                        >
+                          Approve Remediation
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Severity Badge */}

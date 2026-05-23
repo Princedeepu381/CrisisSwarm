@@ -1,7 +1,7 @@
 'use client';
 
 interface StatusBadgeProps {
-  status: 'active' | 'idle' | 'investigating' | 'resolved' | 'critical' | 'warning' | 'success';
+  status: 'active' | 'idle' | 'investigating' | 'resolved' | 'critical' | 'warning' | 'success' | 'offline' | 'awaiting_approval';
   label?: string;
   size?: 'sm' | 'md' | 'lg';
   animate?: boolean;
@@ -66,6 +66,20 @@ const statusConfig: {
     dotColor: 'bg-cs-accent-success',
     icon: 'check-circle',
     label: 'Success',
+  },
+  offline: {
+    color: 'text-cs-dark-300',
+    bgColor: 'bg-cs-dark-300/10',
+    dotColor: 'bg-cs-dark-300',
+    icon: 'power',
+    label: 'Offline',
+  },
+  awaiting_approval: {
+    color: 'text-purple-400',
+    bgColor: 'bg-purple-400/10',
+    dotColor: 'bg-purple-400',
+    icon: 'shield-alert',
+    label: 'Awaiting Approval',
   },
 };
 

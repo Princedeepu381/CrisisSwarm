@@ -1,0 +1,89 @@
+// ─── CrisisSwarm Prisma Schema ────────────────────────────────────────────────
+// Uses SQLite for zero-config local development and hackathon demo.
+// Production target: Azure Cosmos DB (NoSQL) via Prisma MongoDB adapter —
+//   globally distributed, serverless, and natively Azure-integrated.
+// Run `npx prisma db push` to sync the schema to the database.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./crisisswarm.db"
+}
+
+// ─── Incident Model ──────────────────────────────────────────────────────────
+
+model Incident {
+  id               String   @id @default(cuid())  // Internal DB key (CUID)
+  incidentRef      String   @default("") @map("incident_ref") // Human-readable ID: INC-001, INC-002...
+  severity         String   // "critical" | "high" | "medium" | "low"
+  title            String
+  description      String
+  status           String   @default("active") // "active" | "investigating" | "mitigating" | "resolved"
+  createdAt        DateTime @default(now()) @map("created_at")
+  resolvedAt       DateTime? @map("resolved_at")
+  affectedService  String   @map("affected_service")
+  assignedAgent    String   @map("assigned_agent")
+  impact           String   @default("Medium")
+  timelineJson     String   @default("[]") @map("timeline_json") // JSON-encoded timeline events
+
+  @@map("incidents")
+}
+
+// ─── Terminal Log Model ──────────────────────────────────────────────────────
+
+model TerminalLog {
+  id        String   @id @default(cuid())
+  timestamp String
+  agent     String
+  status    String   // "success" | "warning" | "error" | "info"
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("terminal_logs")
+}
+
+// ─── Telemetry Point Model ───────────────────────────────────────────────────
+
+model TelemetryPoint {
+  id           String   @id @default(cuid())
+  time         String
+  cpu          Float
+  memory       Float
+  responseTime Float    @map("response_time")
+  errorRate    Float    @map("error_rate")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("telemetry_points")
+}
+
+// ─── Alert Model ─────────────────────────────────────────────────────────────
+
+model Alert {
+  id        String   @id @default(cuid())
+  type      String   // "cpu" | "memory" | "response_time" | "error_rate"
+  severity  String   // "critical" | "high" | "medium" | "low"
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("alerts")
+}
+
+// ─── Agent Model ─────────────────────────────────────────────────────────────
+
+model Agent {
+  id              String   @id @default(cuid())
+  agentName       String   @unique @map("agent_name")
+  status          String   @default("idle") // "active" | "investigating" | "idle" | "offline"
+  currentTask     String   @default("Ready for incident response") @map("current_task")
+  responseTime    Int      @default(200) @map("response_time")
+  successRate     Int      @default(95) @map("success_rate")
+  cpuUsage        Int      @default(20) @map("cpu_usage")
+  memoryUsage     Int      @default(30) @map("memory_usage")
+  incidentsHandled Int     @default(0) @map("incidents_handled")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("agents")
+}

@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import MainLayout from '@/components/layout/MainLayout';
 import MetricCard from '@/components/common/MetricCard';
 import SystemHealth from '@/components/dashboard/SystemHealth';
 import IncidentFeed from '@/components/dashboard/IncidentFeed';
 import TelemetryChart from '@/components/dashboard/TelemetryChart';
+import GlobalCloudRegions from '@/components/dashboard/GlobalCloudRegions';
 import GlassCard from '@/components/common/GlassCard';
 import StatusBadge from '@/components/common/StatusBadge';
 import AzureInsightsSummary from '@/components/azure/AzureInsightsSummary';
@@ -42,6 +43,45 @@ const itemVariants = {
   },
 };
 
+// ─── Crisis Scenarios ─────────────────────────────────────────────────────────
+const CRISIS_SCENARIOS = [
+  {
+    title: 'API Gateway DDoS Attack Detected',
+    description: 'Distributed denial-of-service attack targeting primary API gateway. Traffic anomaly detected across multiple regions. Automated mitigation protocols initiated.',
+    severity: 'critical',
+    affected_service: 'API Gateway',
+    impact: 'Critical',
+  },
+  {
+    title: 'Database Primary Failover Triggered',
+    description: 'Primary database cluster experiencing cascading timeout failures. Read replicas promoted. Data integrity verification in progress.',
+    severity: 'critical',
+    affected_service: 'Database',
+    impact: 'Critical',
+  },
+  {
+    title: 'CDN Edge Node Cascade Failure',
+    description: 'Multiple CDN edge nodes reporting connectivity loss across Asia-Pacific and European regions. Content delivery severely impacted.',
+    severity: 'critical',
+    affected_service: 'CDN Edge',
+    impact: 'Critical',
+  },
+  {
+    title: 'Auth Service Token Decryption Failure',
+    description: 'Authentication microservice unable to decrypt session tokens. All user sessions affected. Emergency key rotation initiated.',
+    severity: 'high',
+    affected_service: 'Auth Service',
+    impact: 'High',
+  },
+  {
+    title: 'Memory Leak in Service Mesh Sidecar',
+    description: 'Envoy sidecar proxy containers showing exponential memory growth. Pod evictions increasing. Swarm agents analyzing root cause.',
+    severity: 'high',
+    affected_service: 'Service Mesh',
+    impact: 'High',
+  },
+];
+
 export default function Dashboard() {
   const [metrics, setMetrics] = useState(mockMetrics);
   const [incidents, setIncidents] = useState<any[]>(mockIncidents);
@@ -49,6 +89,8 @@ export default function Dashboard() {
   const [alerts, setAlerts] = useState<any[]>(mockAlerts);
   const [swarmAgents, setSwarmAgents] = useState<any[]>(mockSwarmAgents);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isCrisisTriggering, setIsCrisisTriggering] = useState(false);
+  const [crisisFlash, setCrisisFlash] = useState(false);
   const [aiRecommendation, setAiRecommendation] = useState(
     'Swarm behavior normal. Predictive analysis suggests 99.9% availability for the next 2 hours.'
   );
@@ -89,18 +131,70 @@ export default function Dashboard() {
     }
   }, []);
 
+  // ─── Simulate Crisis Handler ─────────────────────────────────────────────────
+  const handleSimulateCrisis = async () => {
+    setIsCrisisTriggering(true);
+    setCrisisFlash(true);
+    setTimeout(() => setCrisisFlash(false), 1500);
+
+    const scenario = CRISIS_SCENARIOS[Math.floor(Math.random() * CRISIS_SCENARIOS.length)];
+
+    try {
+      await fetch('/api/incidents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(scenario),
+      });
+      // Immediately refresh to show the impact
+      await fetchData();
+    } catch (e) {
+      console.error('Failed to simulate crisis:', e);
+    } finally {
+      setTimeout(() => setIsCrisisTriggering(false), 800);
+    }
+  };
+
+  const handleApproveRemediation = async (id: string) => {
+    try {
+      await fetch('/api/incidents', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'mitigating' }),
+      });
+      await fetchData();
+    } catch (e) {
+      console.error('Failed to approve remediation:', e);
+    }
+  };
+
+  const handleRejectRemediation = async (id: string) => {
+    try {
+      await fetch('/api/incidents', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'resolved' }),
+      });
+      await fetchData();
+    } catch (e) {
+      console.error('Failed to reject remediation:', e);
+    }
+  };
+
   // Update AI recommendations dynamically based on active status
   useEffect(() => {
     const active = incidents.filter((i) => i.status !== 'resolved');
     if (active.length > 0) {
       const newest = active[0];
-      setAiRecommendation(
-        `AI Swarm: ${newest.assigned_agent} is actively remediating "${newest.title}" on service "${newest.affected_service}".`
-      );
+      const statusMessages: Record<string, string> = {
+        active: `⚠️ ALERT: "${newest.title}" detected on ${newest.affected_service}. Agent ${newest.assigned_agent} dispatched for autonomous triage.`,
+        investigating: `🔍 Agent ${newest.assigned_agent} is performing root cause analysis on "${newest.title}". Correlating telemetry signals across affected regions.`,
+        awaiting_approval: `🛡️ GOVERNANCE: Agent proposed automated hotfix for "${newest.title}". Awaiting operator approval before execution.`,
+        mitigating: `🛠️ Autonomous remediation in progress for "${newest.title}". Agent ${newest.assigned_agent} deploying corrective actions on ${newest.affected_service}.`,
+      };
+      setAiRecommendation(statusMessages[newest.status] || statusMessages.active);
     } else if (alerts.length > 0) {
-      const newest = alerts[0];
       setAiRecommendation(
-        `Alert Flagged: ${newest.message}. Swarm agents are executing diagnostic health sweeps.`
+        `Alert Flagged: ${alerts[0].message}. Swarm agents are executing diagnostic health sweeps.`
       );
     } else {
       setAiRecommendation(
@@ -110,15 +204,27 @@ export default function Dashboard() {
   }, [incidents, alerts]);
 
   useEffect(() => {
-    // Initial fetch
     fetchData();
-    // Poll every 6 seconds for real-time effects
-    const interval = setInterval(() => fetchData(false), 6000);
+    // Poll every 4 seconds for real-time feel
+    const interval = setInterval(() => fetchData(false), 4000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
   return (
     <MainLayout>
+      {/* Crisis Flash Effect */}
+      <AnimatePresence>
+        {crisisFlash && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.15 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 bg-red-500 pointer-events-none"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="sticky top-0 z-30 border-b border-cs-blue-400/10 bg-gradient-to-b from-cs-dark-600/80 via-cs-dark-700/80 to-transparent backdrop-blur-xl">
         <div className="px-6 md:px-8 py-6">
@@ -133,20 +239,44 @@ export default function Dashboard() {
                   Command Center
                 </h1>
                 <p className="text-sm text-cs-dark-200 opacity-70 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-cs-accent-success animate-pulse"></div>
+                  <span className="w-2 h-2 rounded-full bg-cs-accent-success animate-pulse"></span>
                   All systems operational • Live Telemetry Active
                 </p>
               </div>
-              <motion.div className="flex items-center gap-2" whileHover={{ scale: 1.05 }}>
-                <button
+              <div className="flex items-center gap-3">
+                {/* Simulate Crisis Button */}
+                <motion.button
+                  id="btn-simulate-crisis"
+                  onClick={handleSimulateCrisis}
+                  disabled={isCrisisTriggering}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-4 py-2 bg-gradient-to-r from-red-600/80 to-orange-600/80 border border-red-400/40 rounded-lg text-sm font-bold text-white hover:from-red-600 hover:to-orange-600 transition-all flex items-center gap-2 shadow-lg shadow-red-900/30"
+                >
+                  {isCrisisTriggering ? (
+                    <>
+                      <LucideIcons.Loader2 className="w-4 h-4 animate-spin" />
+                      Triggering...
+                    </>
+                  ) : (
+                    <>
+                      <LucideIcons.Zap className="w-4 h-4" />
+                      Simulate Crisis
+                    </>
+                  )}
+                </motion.button>
+
+                {/* Refresh Button */}
+                <motion.button
                   onClick={() => fetchData(true)}
                   disabled={isRefreshing}
+                  whileHover={{ scale: 1.05 }}
                   className="px-4 py-2 bg-cs-blue-500/20 border border-cs-blue-400/30 rounded-lg text-sm font-medium text-cs-blue-400 hover:bg-cs-blue-500/30 transition-all flex items-center gap-2"
                 >
                   <LucideIcons.RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                   {isRefreshing ? 'Refreshing...' : 'Refresh'}
-                </button>
-              </motion.div>
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -184,13 +314,13 @@ export default function Dashboard() {
             unit="%"
             icon="activity"
             status={metrics.system_health > 80 ? 'good' : metrics.system_health > 60 ? 'warning' : 'critical'}
-            trend={{ value: 8, isPositive: true }}
+            trend={{ value: 8, isPositive: metrics.system_health > 80 }}
           />
           <MetricCard
             label="Active Incidents"
             value={metrics.total_incidents}
             icon="alert-triangle"
-            status={metrics.total_incidents === 0 ? 'good' : 'warning'}
+            status={metrics.total_incidents === 0 ? 'good' : metrics.total_incidents > 2 ? 'critical' : 'warning'}
             trend={{ value: metrics.total_incidents, isPositive: metrics.total_incidents === 0 }}
           />
           <MetricCard
@@ -199,7 +329,7 @@ export default function Dashboard() {
             unit="ms"
             icon="clock"
             status={metrics.response_time_avg < 250 ? 'good' : 'warning'}
-            trend={{ value: 12, isPositive: true }}
+            trend={{ value: 12, isPositive: metrics.response_time_avg < 250 }}
           />
           <MetricCard
             label="Request Rate"
@@ -211,20 +341,17 @@ export default function Dashboard() {
           />
         </motion.div>
 
-        {/* System Health & Incidents Section */}
+        {/* System Health & Global Regions */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* System Health Circle */}
           <div className="lg:col-span-2">
             <SystemHealth
               health={metrics.system_health}
               incidents={metrics.total_incidents}
               alerts={metrics.active_alerts}
-              uptime={99.8}
+              uptime={metrics.system_health > 80 ? 99.8 : 97.2}
             />
           </div>
-
-          {/* Azure Insights Summary */}
-          <AzureInsightsSummary />
+          <GlobalCloudRegions activeIncidents={incidents} />
         </motion.div>
 
         {/* Telemetry Charts */}
@@ -234,16 +361,19 @@ export default function Dashboard() {
 
         {/* Incidents & Alerts */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Incident Feed */}
           <div className="lg:col-span-2">
-            <IncidentFeed incidents={incidents} />
+            <IncidentFeed
+              incidents={incidents}
+              onApprove={handleApproveRemediation}
+              onReject={handleRejectRemediation}
+            />
           </div>
 
           {/* Alerts Panel */}
           <GlassCard className="p-6">
             <div className="mb-4">
               <h3 className="text-lg font-semibold text-cs-dark-50 flex items-center gap-2">
-                <LucideIcons.Bell className="w-5 h-5 text-orange-400 animate-pulse" />
+                <LucideIcons.Bell className={`w-5 h-5 ${alerts.length > 0 ? 'text-orange-400 animate-pulse' : 'text-cs-dark-200 opacity-40'}`} />
                 Active Alerts
               </h3>
               <p className="text-xs text-cs-dark-200 opacity-60 mt-1">
@@ -253,7 +383,8 @@ export default function Dashboard() {
 
             <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
               {alerts.length === 0 ? (
-                <div className="text-center py-8 text-cs-dark-200 opacity-55 text-sm">
+                <div className="text-center py-8 text-cs-dark-200 opacity-55 text-sm flex flex-col items-center gap-2">
+                  <LucideIcons.ShieldCheck className="w-8 h-8 opacity-30" />
                   No active system alerts.
                 </div>
               ) : (
@@ -341,6 +472,11 @@ export default function Dashboard() {
               ))}
             </div>
           </GlassCard>
+        </motion.div>
+
+        {/* Azure Insights */}
+        <motion.div variants={itemVariants}>
+          <AzureInsightsSummary />
         </motion.div>
       </motion.div>
     </MainLayout>

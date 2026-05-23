@@ -12,7 +12,7 @@ import { mockIncidents } from '@/lib/mockData';
 
 type MockIncident = typeof mockIncidents[number];
 type Severity = 'critical' | 'high' | 'medium' | 'low';
-type Status   = 'all' | 'active' | 'investigating' | 'resolved';
+type Status   = 'all' | 'active' | 'investigating' | 'resolved' | 'awaiting_approval';
 
 export default function IncidentsPage() {
   const [incidents, setIncidents] = useState<any[]>(mockIncidents);
@@ -84,6 +84,21 @@ export default function IncidentsPage() {
       }
     } catch (e) {
       console.error('Failed to resolve incident:', e);
+    }
+  };
+
+  const handleApprove = async (id: string) => {
+    try {
+      const res = await fetch('/api/incidents', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'mitigating' }),
+      });
+      if (res.ok) {
+        fetchIncidents();
+      }
+    } catch (e) {
+      console.error('Failed to approve remediation:', e);
     }
   };
 
@@ -199,6 +214,7 @@ export default function IncidentsPage() {
         incident={selectedIncident}
         onClose={() => setSelectedIncident(null)}
         onResolve={handleResolve}
+        onApprove={handleApprove}
       />
 
       {/* New Incident Dialog Modal */}

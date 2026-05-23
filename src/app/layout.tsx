@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import AuthGuard from '@/components/auth/AuthGuard';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,8 +26,9 @@ export default function RootLayout({
       <body
         className={`${inter.className} bg-cs-dark-800 text-cs-dark-50 antialiased overflow-hidden`}
       >
-        {children}
+        <AuthGuard>{children}</AuthGuard>
       </body>
     </html>
   );
 }
+
