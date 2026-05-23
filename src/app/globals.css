@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply box-border;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: linear-gradient(135deg, #0B1220 0%, #080D17 50%, #05080E 100%);
+  color: #F5F7FA;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(11, 18, 32, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 120, 212, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 120, 212, 0.5);
+}
+
+/* Glassmorphism effect */
+.glass-effect {
+  background: rgba(11, 18, 32, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 120, 212, 0.1);
+}
+
+/* Glow animations */
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(0, 120, 212, 0.3));
+  }
+  50% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 20px rgba(0, 120, 212, 0.5));
+  }
+}
+
+.glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Smooth transitions */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    @apply transition-colors duration-200;
+  }
+}
+
+/* Selection color */
+::selection {
+  background-color: rgba(0, 120, 212, 0.3);
+  color: #F5F7FA;
+}
+
+::-moz-selection {
+  background-color: rgba(0, 120, 212, 0.3);
+  color: #F5F7FA;
+}
