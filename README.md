@@ -1,112 +1,111 @@
-# CrisisSwarm 🚨
+# 🚨 CrisisSwarm
 
-AI-Powered Autonomous Incident Monitoring & Response System built on Microsoft Azure.
+> AI-Powered Autonomous Incident Monitoring & Response System built on Microsoft Azure
 
-## Problem Statement
-Enterprise outages and failures can cause massive downtime, financial loss, and delayed incident response. Traditional monitoring systems only notify humans after failures occur, leading to slower Mean Time To Resolution (MTTR).
+CrisisSwarm is a cloud-native intelligent monitoring and incident response prototype designed to detect failures, monitor anomalies, stream telemetry, and simulate autonomous incident handling workflows using Microsoft Azure services.
 
-## Solution
-CrisisSwarm is an intelligent incident monitoring and response prototype built on Azure. It combines cloud monitoring, anomaly detection, logging, and alert orchestration to simulate an autonomous incident response system.
-
-The system detects anomalies, monitors failures, streams logs in real-time, and lays the foundation for future AI-driven swarm orchestration.
+Built as part of a hackathon project under **Theme 5 — Agent Swarms**.
 
 ---
 
-# Features
+# 📌 Problem Statement
 
-- Live Azure App Service deployment
-- Application Insights monitoring
-- Real-time log streaming
+Modern enterprises suffer significant downtime due to:
+- delayed incident detection
+- slow manual troubleshooting
+- fragmented monitoring systems
+- lack of intelligent remediation
+
+Traditional monitoring tools only generate alerts after failures occur, forcing engineers to manually investigate logs, analyze failures, and coordinate fixes.
+
+This increases:
+- Mean Time To Resolution (MTTR)
+- operational costs
+- downtime impact
+- alert fatigue
+
+---
+
+# 💡 Solution
+
+CrisisSwarm introduces an intelligent monitoring and response pipeline using Azure cloud services.
+
+The platform:
+- monitors application health
+- streams live telemetry
+- detects failed requests
+- generates alerts
+- simulates autonomous incident response workflows
+
+It serves as the foundation for a future AI-driven multi-agent incident remediation system.
+
+---
+
+# ⚡ Features
+
+## ✅ Cloud-Native Deployment
+- Azure App Service deployment
+- Node.js backend hosted on Azure
+
+## ✅ Monitoring & Observability
+- Azure Application Insights integration
+- Real-time telemetry collection
+- Live request monitoring
+- Health endpoint monitoring
+
+## ✅ Incident Detection
 - Failed request detection
-- Alert rule configuration
-- Health monitoring endpoint
+- Response time alerting
+- Real-time log streaming
 - Simulated failure generation
-- Cloud-native monitoring pipeline
+
+## ✅ Alerting Pipeline
+- Azure Monitor alert rules
+- Smart detection integration
+- Diagnostic logging
+- Log Analytics integration
+
+## ✅ Deployment Pipeline
+- Kudu ZIP deployment
+- GitHub integration
+- Cloud-based deployment workflow
 
 ---
 
-# Azure Services Used
+# 🏗️ Architecture
 
-- Azure App Service
-- Azure Monitor
-- Application Insights
-- Log Analytics Workspace
-- Azure Alerts
-- Kudu Deployment Engine
-
----
-
-# Architecture
-
-User Requests
-↓
-Azure App Service
-↓
-Application Insights
-↓
-Azure Monitor Alerts
-↓
-CrisisSwarm Monitoring Layer
-↓
-Future AI Incident Response Swarm
-
----
-
-# Demo Flow
-
-1. User accesses the application
-2. Requests are logged through Application Insights
-3. Azure Monitor tracks anomalies
-4. Failed requests trigger alerts
-5. Monitoring pipeline captures telemetry
-6. CrisisSwarm analyzes incidents for future remediation workflows
-
----
-
-# Endpoints
-
-## Health Check
-/health
-
-## Failure Simulation
-/error
-
----
-
-# Future Scope
-
-- AI-powered root cause analysis
-- Autonomous remediation agents
-- Microsoft Teams integration
-- GPT-powered incident summaries
-- Swarm-based multi-agent orchestration
-- Predictive anomaly detection
-- Compliance-aware audit logging
-
----
-
-# Tech Stack
-
-- Node.js
-- Microsoft Azure
-- Azure Monitor
-- Application Insights
-- GitHub
-- Kudu Deployment
-
----
-
-# Author
-
-Deepak M
-
----
-
-# Hackathon Theme
-
-Theme 5 — Agent Swarms
-
-Secondary Relevance:
-- Security
-- Productivity
-- Autonomous Operations
+```text
+                    ┌────────────────────┐
+                    │       Users        │
+                    └─────────┬──────────┘
+                              │
+                              ▼
+                ┌─────────────────────────┐
+                │ Azure App Service       │
+                │ (Node.js Web App)       │
+                └─────────┬───────────────┘
+                          │
+                          ▼
+                ┌─────────────────────────┐
+                │ Application Insights    │
+                │ Telemetry & Monitoring  │
+                └─────────┬───────────────┘
+                          │
+                          ▼
+                ┌─────────────────────────┐
+                │ Azure Monitor Alerts    │
+                │ Smart Detection Rules   │
+                └─────────┬───────────────┘
+                          │
+                          ▼
+                ┌─────────────────────────┐
+                │ CrisisSwarm Engine      │
+                │ Incident Analysis Layer │
+                └─────────┬───────────────┘
+                          │
+              ┌───────────┴────────────┐
+              ▼                        ▼
+   ┌─────────────────┐      ┌──────────────────┐
+   │ Log Analytics    │      │ Future AI Swarm │
+   │ Diagnostic Logs  │      │ Autonomous Agents│
+   └─────────────────┘      └──────────────────┘
