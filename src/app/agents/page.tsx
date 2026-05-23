@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect, useCallback } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
@@ -9,7 +10,7 @@ import NetworkTopology from '@/components/swarm/NetworkTopology';
 import CommandExecutor from '@/components/swarm/CommandExecutor';
 import SwarmMetrics from '@/components/swarm/SwarmMetrics';
 import SwarmStatusPanel from '@/components/swarm/SwarmStatusPanel';
-import { mockSwarmAgents } from '@/lib/mockData';
+import { mockSwarmAgents, mockTerminalLogs } from '@/lib/mockData';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -35,6 +36,51 @@ const itemVariants = {
 };
 
 export default function Agents() {
+  const [agents, setAgents] = useState<any[]>(mockSwarmAgents);
+  const [terminalLogs, setTerminalLogs] = useState<any[]>(mockTerminalLogs);
+  const [commands, setCommands] = useState<any[]>([]);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const fetchAgentsData = useCallback(async (showSyncState = false) => {
+    if (showSyncState) setIsSyncing(true);
+    try {
+      const res = await fetch('/api/agents');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.agents) setAgents(data.agents);
+        if (data.terminalLogs) setTerminalLogs(data.terminalLogs);
+        if (data.commands) setCommands(data.commands);
+      }
+    } catch (e) {
+      console.error('Error fetching swarm agent data:', e);
+    } finally {
+      if (showSyncState) {
+        setTimeout(() => setIsSyncing(false), 500);
+      }
+    }
+  }, []);
+
+  const handleExecuteCommand = async (command: string) => {
+    try {
+      const res = await fetch('/api/agents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command }),
+      });
+      if (res.ok) {
+        fetchAgentsData();
+      }
+    } catch (e) {
+      console.error('Failed to trigger agent command:', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchAgentsData();
+    const interval = setInterval(() => fetchAgentsData(false), 5000); // Poll every 5s
+    return () => clearInterval(interval);
+  }, [fetchAgentsData]);
+
   return (
     <MainLayout>
       {/* Header */}
@@ -60,14 +106,18 @@ export default function Agents() {
                 </h1>
                 <p className="text-sm text-cs-dark-200 opacity-70 flex items-center gap-2">
                   <LucideIcons.Zap className="w-4 h-4 text-cs-blue-400" />
-                  5 Autonomous Agents • Real-Time Monitoring • Live Command Execution
+                  {agents.length} Autonomous Agents • Live Telemetry Streams • Real-Time Commands
                 </p>
               </div>
 
               <motion.div className="flex items-center gap-2" whileHover={{ scale: 1.05 }}>
-                <button className="px-4 py-2 bg-cs-blue-500/20 border border-cs-blue-400/30 rounded-lg text-sm font-medium text-cs-blue-400 hover:bg-cs-blue-500/30 transition-all">
-                  <LucideIcons.RefreshCw className="w-4 h-4 inline mr-2" />
-                  Sync
+                <button
+                  onClick={() => fetchAgentsData(true)}
+                  disabled={isSyncing}
+                  className="px-4 py-2 bg-cs-blue-500/20 border border-cs-blue-400/30 rounded-lg text-sm font-medium text-cs-blue-400 hover:bg-cs-blue-500/30 transition-all flex items-center gap-2"
+                >
+                  <LucideIcons.RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                  {isSyncing ? 'Syncing...' : 'Sync Fleet'}
                 </button>
               </motion.div>
             </div>
@@ -90,7 +140,7 @@ export default function Agents() {
         {/* Top Section: Status Panel + Network Topology */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
-            <SwarmStatusPanel />
+            <SwarmStatusPanel agents={agents} />
           </div>
           <div className="lg:col-span-2">
             <NetworkTopology />
@@ -100,10 +150,10 @@ export default function Agents() {
         {/* Middle Section: Terminal Feed + Command Executor */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 h-96">
-            <SwarmTerminal />
+            <SwarmTerminal logs={terminalLogs} />
           </div>
           <div className="lg:col-span-1">
-            <CommandExecutor />
+            <CommandExecutor commands={commands} onExecuteCommand={handleExecuteCommand} />
           </div>
         </motion.div>
 
@@ -118,7 +168,7 @@ export default function Agents() {
               Advanced autonomous agent monitoring with real-time performance metrics
             </p>
           </div>
-          <AgentGrid agents={mockSwarmAgents} />
+          <AgentGrid agents={agents} />
         </motion.div>
 
         {/* Advanced Monitoring Section */}
@@ -147,13 +197,13 @@ export default function Agents() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-cs-dark-200 opacity-70">Average Response Time</span>
-                    <span className="text-lg font-bold text-cs-blue-400">245ms</span>
+                    <span className="text-lg font-bold text-cs-blue-400">195ms</span>
                   </div>
                   <div className="w-full bg-cs-dark-800/50 rounded-full h-2 overflow-hidden border border-cs-blue-400/10">
                     <motion.div
                       className="h-full bg-gradient-to-r from-cs-blue-400 to-cs-blue-500"
                       initial={{ width: 0 }}
-                      animate={{ width: '49%' }}
+                      animate={{ width: '38%' }}
                       transition={{ duration: 1 }}
                     />
                   </div>
@@ -162,13 +212,13 @@ export default function Agents() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-cs-dark-200 opacity-70">Success Rate</span>
-                    <span className="text-lg font-bold text-cs-accent-success">97%</span>
+                    <span className="text-lg font-bold text-cs-accent-success">98%</span>
                   </div>
                   <div className="w-full bg-cs-dark-800/50 rounded-full h-2 overflow-hidden border border-cs-blue-400/10">
                     <motion.div
                       className="h-full bg-gradient-to-r from-cs-accent-success to-cs-accent-success"
                       initial={{ width: 0 }}
-                      animate={{ width: '97%' }}
+                      animate={{ width: '98%' }}
                       transition={{ duration: 1 }}
                     />
                   </div>
@@ -177,13 +227,13 @@ export default function Agents() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-cs-dark-200 opacity-70">Network Efficiency</span>
-                    <span className="text-lg font-bold text-cs-accent-success">91%</span>
+                    <span className="text-lg font-bold text-cs-accent-success">96%</span>
                   </div>
                   <div className="w-full bg-cs-dark-800/50 rounded-full h-2 overflow-hidden border border-cs-blue-400/10">
                     <motion.div
                       className="h-full bg-gradient-to-r from-cs-accent-success to-cs-accent-success"
                       initial={{ width: 0 }}
-                      animate={{ width: '91%' }}
+                      animate={{ width: '96%' }}
                       transition={{ duration: 1 }}
                     />
                   </div>

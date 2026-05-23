@@ -19,11 +19,11 @@ const itemVariants = {
 };
 
 const AZURE_STACK = [
-  { icon: 'Server',      label: 'Runtime',         value: 'Node.js · Express.js', color: 'text-cs-accent-success' },
-  { icon: 'Cloud',       label: 'Platform',        value: 'Azure App Service',    color: 'text-cs-blue-400'       },
-  { icon: 'BarChart2',   label: 'Telemetry',       value: 'Application Insights', color: 'text-purple-400'         },
-  { icon: 'Bell',        label: 'Alerting',        value: 'Azure Monitor',        color: 'text-orange-400'         },
-  { icon: 'Database',    label: 'Logs',            value: 'Log Analytics WS',     color: 'text-indigo-400'         },
+  { icon: 'Server',      label: 'Runtime',         value: 'Next.js 14 Serverless API', color: 'text-cs-accent-success' },
+  { icon: 'Cloud',       label: 'Platform',        value: 'Azure Static Web Apps',    color: 'text-cs-blue-400'       },
+  { icon: 'BarChart2',   label: 'Telemetry',       value: 'Dynamic Server Diagnostics', color: 'text-purple-400'         },
+  { icon: 'Bell',        label: 'Alerting',        value: 'AI Swarm Coordinator',      color: 'text-orange-400'         },
+  { icon: 'Database',    label: 'Logs',            value: 'In-Memory State Logs',     color: 'text-indigo-400'         },
   { icon: 'Globe',       label: 'Region',          value: 'Southeast Asia',       color: 'text-yellow-400'         },
 ];
 
@@ -156,15 +156,13 @@ export default function AzurePage() {
                 {[
                   { label: 'Users',                  arrow: false, color: 'text-cs-dark-50'        },
                   { label: '↓',                       arrow: true,  color: 'text-cs-blue-400/40'    },
-                  { label: 'CrisisSwarm Frontend',   arrow: false, color: 'text-cs-blue-400'        },
-                  { label: '↓  HTTPS',                arrow: true,  color: 'text-cs-blue-400/40'    },
-                  { label: 'Azure App Service',       arrow: false, color: 'text-cs-accent-success'  },
+                  { label: 'CrisisSwarm UI',         arrow: false, color: 'text-cs-blue-400'        },
+                  { label: '↓  Relative API Path',    arrow: true,  color: 'text-cs-blue-400/40'    },
+                  { label: 'Next.js API Routes',     arrow: false, color: 'text-cs-accent-success'  },
                   { label: '↓',                       arrow: true,  color: 'text-cs-blue-400/40'    },
-                  { label: 'Application Insights',    arrow: false, color: 'text-purple-400'          },
+                  { label: 'AI Swarm Coordinator',    arrow: false, color: 'text-purple-400'          },
                   { label: '↓',                       arrow: true,  color: 'text-cs-blue-400/40'    },
-                  { label: 'Azure Monitor Alerts',    arrow: false, color: 'text-orange-400'          },
-                  { label: '↓',                       arrow: true,  color: 'text-cs-blue-400/40'    },
-                  { label: 'Log Analytics Workspace', arrow: false, color: 'text-indigo-400'          },
+                  { label: 'Azure Static Web Apps',   arrow: false, color: 'text-indigo-400'          },
                 ].map((n, i) => (
                   <div key={i} className={`${n.color} ${n.arrow ? 'pl-4 opacity-60' : 'px-2 py-1 rounded bg-cs-dark-700/40 border border-cs-blue-400/8'}`}>
                     {n.label}

@@ -73,21 +73,8 @@ const getStatusIcon = (status: string) => {
   }
 };
 
-export default function SwarmTerminal({ initialLogs }: SwarmTerminalProps) {
-  const [logs, setLogs] = useState<TerminalLog[]>(initialLogs || generateTerminalLogs());
+export default function SwarmTerminal({ logs }: { logs: TerminalLog[] }) {
   const [autoScroll, setAutoScroll] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLogs((prev) => {
-        const newLog = generateTerminalLogs()[0];
-        const updated = [newLog, ...prev.slice(0, 11)];
-        return updated;
-      });
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="relative group h-full">

@@ -3,38 +3,56 @@
 import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 
-interface SwarmStatItem {
-  icon: any;
-  label: string;
-  value: string;
-  detail: string;
+interface Agent {
+  id: string;
+  agent_name: string;
+  status: 'active' | 'investigating' | 'idle' | 'offline';
+  current_task: string;
+  created_at: string;
+  response_time: number;
+  success_rate: number;
+  cpu_usage: number;
+  memory_usage: number;
+  incidents_handled: number;
 }
 
-export default function SwarmStatusPanel() {
-  const stats: SwarmStatItem[] = [
+interface SwarmStatusPanelProps {
+  agents: Agent[];
+}
+
+export default function SwarmStatusPanel({ agents }: SwarmStatusPanelProps) {
+  const activeCount = agents.filter(a => a.status !== 'offline').length;
+  const busyCount = agents.filter(a => a.status === 'active' || a.status === 'investigating').length;
+  
+  // Compute average load
+  const avgCpu = Math.floor(agents.reduce((acc, curr) => acc + curr.cpu_usage, 0) / (agents.length || 1));
+  const avgSuccess = Math.floor(agents.reduce((acc, curr) => acc + curr.success_rate, 0) / (agents.length || 1));
+  const totalHandled = agents.reduce((acc, curr) => acc + curr.incidents_handled, 0);
+
+  const stats = [
     {
       icon: LucideIcons.Cpu,
       label: 'Active Agents',
-      value: '5',
-      detail: 'All operational',
+      value: `${activeCount}/${agents.length}`,
+      detail: `${busyCount} processing task${busyCount !== 1 ? 's' : ''}`,
     },
     {
       icon: LucideIcons.Zap,
-      label: 'Operations/Min',
-      value: '247',
-      detail: 'Peak efficiency',
+      label: 'Remediations',
+      value: String(totalHandled),
+      detail: 'Cumulative responses',
     },
     {
       icon: LucideIcons.Shield,
-      label: 'Threats Blocked',
-      value: '12',
-      detail: 'Last 24 hours',
+      label: 'Avg Success Rate',
+      value: `${avgSuccess}%`,
+      detail: 'Mitigation rating',
     },
     {
       icon: LucideIcons.Activity,
-      label: 'System Load',
-      value: '38%',
-      detail: 'Optimal range',
+      label: 'Swarm Cpu Load',
+      value: `${avgCpu}%`,
+      detail: 'Across fleet',
     },
   ];
 
@@ -64,7 +82,7 @@ export default function SwarmStatusPanel() {
                 opacity: [1, 0.8, 1],
               }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="w-2 h-2 rounded-full bg-cs-accent-success"
+              className={`w-2 h-2 rounded-full ${busyCount > 0 ? 'bg-cs-blue-400 animate-pulse' : 'bg-cs-accent-success'}`}
             />
             Swarm Status Overview
           </h3>
@@ -72,7 +90,7 @@ export default function SwarmStatusPanel() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-2 gap-3 mb-6">
           {stats.map((stat, idx) => {
             const Icon = stat.icon;
             return (
@@ -85,10 +103,10 @@ export default function SwarmStatusPanel() {
               >
                 <div className="flex items-start gap-2 mb-2">
                   <Icon className="w-4 h-4 text-cs-blue-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-cs-dark-200 opacity-60">{stat.label}</p>
+                  <p className="text-[10px] text-cs-dark-200 opacity-60 leading-tight">{stat.label}</p>
                 </div>
                 <p className="text-lg font-bold text-cs-dark-50">{stat.value}</p>
-                <p className="text-xs text-cs-dark-200 opacity-50 mt-1">{stat.detail}</p>
+                <p className="text-[10px] text-cs-dark-200 opacity-50 mt-1">{stat.detail}</p>
               </motion.div>
             );
           })}
@@ -97,28 +115,28 @@ export default function SwarmStatusPanel() {
         {/* Status Bar */}
         <div className="pt-4 border-t border-cs-blue-400/10 space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-cs-dark-200 opacity-60">Network Health</span>
-            <span className="text-cs-accent-success font-bold">EXCELLENT</span>
+            <span className="text-cs-dark-200 opacity-60">Fleet Efficiency</span>
+            <span className="text-cs-accent-success font-bold">OPTIMAL</span>
           </div>
           <div className="w-full bg-cs-dark-800/50 rounded-full h-2 overflow-hidden border border-cs-blue-400/10">
             <motion.div
               className="h-full bg-gradient-to-r from-cs-accent-success to-cs-accent-success"
               initial={{ width: 0 }}
-              animate={{ width: '94%' }}
+              animate={{ width: `${avgSuccess}%` }}
               transition={{ duration: 1 }}
             />
           </div>
 
           <div className="flex items-center justify-between text-xs mt-3">
-            <span className="text-cs-dark-200 opacity-60">Threat Level</span>
-            <span className="text-cs-accent-success font-bold">LOW</span>
+            <span className="text-cs-dark-200 opacity-60">Swarm Activity Level</span>
+            <span className={`font-bold ${busyCount > 0 ? 'text-cs-blue-400' : 'text-cs-accent-success'}`}>
+              {busyCount > 0 ? 'ACTIVE RESPONSE' : 'STANDBY MONITORING'}
+            </span>
           </div>
           <div className="w-full bg-cs-dark-800/50 rounded-full h-2 overflow-hidden border border-cs-blue-400/10">
-            <motion.div
-              className="h-full bg-gradient-to-r from-cs-accent-success to-cs-accent-success"
-              initial={{ width: 0 }}
-              animate={{ width: '8%' }}
-              transition={{ duration: 1 }}
+            <div
+              className={`h-full bg-gradient-to-r transition-all duration-500 ${busyCount > 0 ? 'from-cs-blue-400 to-cs-blue-500' : 'from-cs-accent-success to-cs-accent-success'}`}
+              style={{ width: `${busyCount > 0 ? 30 + busyCount * 14 : 10}%` }}
             />
           </div>
         </div>

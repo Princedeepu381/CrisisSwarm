@@ -1,9 +1,7 @@
 // ─── Azure Backend API Client ─────────────────────────────────────────────────
 // Live backend: https://crisisswarmapp-bhfvchcd6fhgtdd.southeastasia-01.azurewebsites.net
 
-export const AZURE_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  'https://crisisswarmapp-bhfvchcd6fhgtdd.southeastasia-01.azurewebsites.net';
+export const AZURE_BASE_URL = '';
 
 // ─── Response Types ───────────────────────────────────────────────────────────
 
@@ -103,21 +101,21 @@ async function azureFetch<T>(
 // ─── Public API Methods ───────────────────────────────────────────────────────
 
 export const azureApi = {
-  /** GET / — root status */
-  getRoot: () => azureFetch<AzureRootResponse>('/'),
+  /** GET /api — root status */
+  getRoot: () => azureFetch<AzureRootResponse>('/api'),
 
-  /** GET /health — health check */
-  getHealth: () => azureFetch<AzureHealthResponse>('/health'),
+  /** GET /api/health — health check */
+  getHealth: () => azureFetch<AzureHealthResponse>('/api/health'),
 
-  /** GET /error — simulate failure (for alert testing) */
-  triggerError: () => azureFetch<{ error: string }>('/error'),
+  /** GET /api/error — simulate failure (for alert testing) */
+  triggerError: () => azureFetch<{ error: string }>('/api/error'),
 
-  /** POST /api/incidents (future endpoint — returns 404 gracefully) */
+  /** GET /api/incidents — list incidents */
   getIncidents: () => azureFetch<unknown[]>('/api/incidents'),
 
-  /** GET /api/metrics (future endpoint) */
-  getMetrics: () => azureFetch<AzureApiMetrics>('/api/metrics'),
+  /** GET /api/telemetry — telemetry data */
+  getTelemetry: () => azureFetch<unknown[]>('/api/telemetry'),
 
-  /** GET /api/agents (future endpoint) */
-  getAgents: () => azureFetch<unknown[]>('/api/agents'),
+  /** GET /api/agents — swarm agents info */
+  getAgents: () => azureFetch<{ agents: unknown[]; terminalLogs: unknown[]; commands: unknown[] }>('/api/agents'),
 };

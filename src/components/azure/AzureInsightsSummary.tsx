@@ -69,10 +69,10 @@ export default function AzureInsightsSummary() {
       {/* Stack info */}
       <div className="space-y-1.5">
         {[
-          { label: 'Runtime',   value: 'Node.js · Express.js' },
-          { label: 'Platform',  value: 'Azure App Service'    },
-          { label: 'Telemetry', value: 'Application Insights' },
-          { label: 'Alerts',    value: 'Azure Monitor'        },
+          { label: 'Runtime',   value: 'Next.js Serverless API' },
+          { label: 'Platform',  value: 'Azure Static Web Apps' },
+          { label: 'Telemetry', value: 'Dynamic Server Diagnostics' },
+          { label: 'Alerting',  value: 'AI Predictive Engine' },
           { label: 'Region',    value: 'Southeast Asia'       },
         ].map((row) => (
           <div key={row.label} className="flex items-center justify-between text-xs">

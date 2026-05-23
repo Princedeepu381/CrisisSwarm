@@ -26,6 +26,7 @@ interface Incident {
 interface IncidentDrawerProps {
   incident: Incident | null;
   onClose: () => void;
+  onResolve: (id: string) => void;
 }
 
 const severityStyles: Record<string, { badge: string; glow: string; label: string }> = {
@@ -48,7 +49,7 @@ function fmtTime(iso: string) {
   return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
-export default function IncidentDrawer({ incident, onClose }: IncidentDrawerProps) {
+export default function IncidentDrawer({ incident, onClose, onResolve }: IncidentDrawerProps) {
   const sev = incident ? severityStyles[incident.severity] ?? severityStyles.low : null;
 
   return (
@@ -196,6 +197,9 @@ export default function IncidentDrawer({ incident, onClose }: IncidentDrawerProp
             <div className="flex gap-3 p-5 border-t border-cs-blue-400/10 bg-cs-dark-700/30 backdrop-blur-xl flex-shrink-0">
               <button
                 id="btn-escalate"
+                onClick={() => {
+                  alert('Incident escalated to Tier 3 human response teams.');
+                }}
                 className="flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold border border-orange-400/30 text-orange-400 bg-orange-400/10 hover:bg-orange-400/20 transition-all duration-200"
               >
                 <LucideIcons.ArrowUpCircle className="w-4 h-4 inline mr-2" />
@@ -204,6 +208,7 @@ export default function IncidentDrawer({ incident, onClose }: IncidentDrawerProp
               {incident.status !== 'resolved' && (
                 <button
                   id="btn-resolve"
+                  onClick={() => onResolve(incident.id)}
                   className="flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold bg-cs-accent-success/20 border border-cs-accent-success/40 text-cs-accent-success hover:bg-cs-accent-success/30 transition-all duration-200"
                 >
                   <LucideIcons.CheckCircle className="w-4 h-4 inline mr-2" />

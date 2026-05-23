@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 
 interface CommandLog {
@@ -12,39 +13,17 @@ interface CommandLog {
   affectedAgents: number;
 }
 
-const mockCommands: CommandLog[] = [
-  {
-    id: '1',
-    command: 'Execute Incident Response Protocol',
-    status: 'completed',
-    progress: 100,
-    timestamp: '14:32:10',
-    affectedAgents: 5,
-  },
-  {
-    id: '2',
-    command: 'Deploy Security Patches',
-    status: 'executing',
-    progress: 68,
-    timestamp: '14:31:45',
-    affectedAgents: 5,
-  },
-  {
-    id: '3',
-    command: 'Analyze Threat Intelligence',
-    status: 'executing',
-    progress: 42,
-    timestamp: '14:31:20',
-    affectedAgents: 3,
-  },
-  {
-    id: '4',
-    command: 'Load Balance Network Resources',
-    status: 'pending',
-    progress: 0,
-    timestamp: '14:30:55',
-    affectedAgents: 4,
-  },
+interface CommandExecutorProps {
+  commands: CommandLog[];
+  onExecuteCommand: (command: string) => void;
+}
+
+const PREDEFINED_COMMANDS = [
+  'Mitigate traffic anomaly (Deploy IP blocklist)',
+  'Run node garbage collection (Prune cache memory)',
+  'Scale out web tier replica instances (+3 pods)',
+  'Rotate service mesh mTLS certificates',
+  'Execute deep health diagnostic sweep',
 ];
 
 const getStatusColor = (status: string): string => {
@@ -77,7 +56,9 @@ const getStatusBg = (status: string): string => {
   }
 };
 
-export default function CommandExecutor() {
+export default function CommandExecutor({ commands, onExecuteCommand }: CommandExecutorProps) {
+  const [showMenu, setShowMenu] = useState(false);
+
   return (
     <div className="group relative">
       {/* Animated glow border */}
@@ -96,17 +77,21 @@ export default function CommandExecutor() {
       `}
       >
         {/* Header */}
-        <div className="mb-6">
-          <h3 className="text-lg font-bold text-cs-dark-50 flex items-center gap-2">
-            <LucideIcons.Zap className="w-5 h-5 text-orange-400 animate-pulse" />
-            Command Execution Queue
-          </h3>
-          <p className="text-xs text-cs-dark-200 opacity-60 mt-1">4 Operations • 2 Active • 1 Queued</p>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-bold text-cs-dark-50 flex items-center gap-2">
+              <LucideIcons.Zap className="w-5 h-5 text-orange-400 animate-pulse" />
+              Command Execution Queue
+            </h3>
+            <p className="text-xs text-cs-dark-200 opacity-60 mt-1">
+              {commands.length} Operations • {commands.filter(c => c.status === 'executing').length} Active
+            </p>
+          </div>
         </div>
 
         {/* Commands List */}
-        <div className="space-y-3">
-          {mockCommands.map((cmd, idx) => (
+        <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+          {commands.map((cmd, idx) => (
             <motion.div
               key={cmd.id}
               initial={{ opacity: 0, x: -20 }}
@@ -158,14 +143,12 @@ export default function CommandExecutor() {
                   <span className="text-xs font-bold text-cs-blue-400">{cmd.progress}%</span>
                 </div>
                 <div className="w-full bg-cs-dark-800/50 rounded-full h-2 overflow-hidden border border-cs-blue-400/10">
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-cs-blue-400 to-cs-blue-500"
-                    initial={{ width: 0 }}
-                    animate={{
+                  <div
+                    className="h-full bg-gradient-to-r from-cs-blue-400 to-cs-blue-500 transition-all duration-300"
+                    style={{
                       width: `${cmd.progress}%`,
                       boxShadow: cmd.status === 'executing' ? '0 0 10px rgba(0, 194, 255, 0.8)' : 'none',
                     }}
-                    transition={{ duration: cmd.status === 'executing' ? 2 : 0.5 }}
                   />
                 </div>
               </div>
@@ -174,23 +157,48 @@ export default function CommandExecutor() {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-6 pt-4 border-t border-cs-blue-400/10 flex gap-2">
+        <div className="mt-6 pt-4 border-t border-cs-blue-400/10 flex gap-2 relative">
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex-1 px-3 py-2 bg-cs-blue-500/20 border border-cs-blue-400/50 rounded-lg text-xs font-semibold text-cs-blue-400 hover:bg-cs-blue-500/30 transition-colors"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowMenu(!showMenu)}
+            className="flex-1 px-3 py-2.5 bg-cs-blue-500/20 border border-cs-blue-400/50 rounded-lg text-xs font-semibold text-cs-blue-400 hover:bg-cs-blue-500/30 transition-colors flex items-center justify-center gap-1.5"
           >
-            <LucideIcons.Play className="w-3 h-3 inline mr-1" />
-            New Command
+            <LucideIcons.Play className="w-3.5 h-3.5" />
+            Dispatch Command
           </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex-1 px-3 py-2 bg-cs-dark-700/50 border border-cs-blue-400/10 rounded-lg text-xs font-semibold text-cs-dark-200 hover:border-cs-blue-400/30 transition-all"
-          >
-            <LucideIcons.History className="w-3 h-3 inline mr-1" />
-            History
-          </motion.button>
+
+          <AnimatePresence>
+            {showMenu && (
+              <>
+                <div className="fixed inset-0 z-30" onClick={() => setShowMenu(false)} />
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 15 }}
+                  className="absolute bottom-12 left-0 right-0 z-40 bg-cs-dark-600 border border-cs-blue-400/30 rounded-lg shadow-xl overflow-hidden"
+                >
+                  <div className="p-2 border-b border-cs-blue-400/10 bg-cs-dark-700 text-[10px] uppercase font-bold text-cs-dark-200 opacity-60 tracking-wider">
+                    Select Agent Directive
+                  </div>
+                  <div className="divide-y divide-cs-blue-400/5">
+                    {PREDEFINED_COMMANDS.map((cmd) => (
+                      <button
+                        key={cmd}
+                        onClick={() => {
+                          onExecuteCommand(cmd);
+                          setShowMenu(false);
+                        }}
+                        className="w-full text-left p-3 text-xs text-cs-dark-100 hover:bg-cs-blue-500/10 hover:text-cs-blue-400 transition-all font-mono"
+                      >
+                        {cmd}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
