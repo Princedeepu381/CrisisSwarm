@@ -16,7 +16,6 @@ type Status   = 'all' | 'active' | 'investigating' | 'resolved';
 
 export default function IncidentsPage() {
   const [incidents, setIncidents] = useState<any[]>(mockIncidents);
-  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedSeverities, setSelectedSeverities] = useState<Severity[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<Status>('all');
@@ -47,7 +46,7 @@ export default function IncidentsPage() {
     } catch (e) {
       console.error('Error fetching incidents:', e);
     } finally {
-      setIsLoading(false);
+      // Loading finished
     }
   }, [selectedIncident]);
 

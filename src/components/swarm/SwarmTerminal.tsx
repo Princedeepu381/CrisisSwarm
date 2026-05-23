@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 
@@ -12,36 +12,8 @@ interface TerminalLog {
   message: string;
 }
 
-interface SwarmTerminalProps {
-  initialLogs?: TerminalLog[];
-}
 
-const generateTerminalLogs = (): TerminalLog[] => {
-  const agents = ['AutoScaler-Alpha', 'MemoryOptimizer-Beta', 'HealthMonitor-Gamma', 'NetworkDefense-Delta', 'ResponseUnit-Epsilon'];
-  const actions = [
-    'Analyzing CPU patterns...',
-    'Deploying auto-scaling policy',
-    'Memory optimization initiated',
-    'Incident response activated',
-    'Network traffic intercepted',
-    'DDoS mitigation engaged',
-    'Anomaly detected and quarantined',
-    'Load balancing adjustment',
-    'Service health check passed',
-    'Threat intelligence updated',
-    'Autonomous remediation complete',
-    'Performance metrics optimized',
-  ];
-  const statuses: Array<'success' | 'warning' | 'error' | 'info'> = ['success', 'warning', 'error', 'info'];
 
-  return Array.from({ length: 12 }, (_, i) => ({
-    id: `log-${i}`,
-    timestamp: new Date(Date.now() - i * 5000).toLocaleTimeString(),
-    agent: agents[Math.floor(Math.random() * agents.length)],
-    status: statuses[Math.floor(Math.random() * statuses.length)],
-    message: actions[Math.floor(Math.random() * actions.length)],
-  }));
-};
 
 const getStatusColor = (status: string): string => {
   switch (status) {
