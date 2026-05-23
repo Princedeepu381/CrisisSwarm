@@ -1,105 +1,44 @@
-# 🚨 CrisisSwarm
+# 🚨 CrisisSwarm — Frontend Control Center
 
-> AI-Powered Autonomous Incident Monitoring & Response System built on Microsoft Azure
+> **Theme 5 — Agent Swarms** (Hackathon Submission)  
+> *AI-Powered Autonomous Incident Monitoring & Response System built on Microsoft Azure and Next.js 14.*
 
-CrisisSwarm is a cloud-native intelligent monitoring and incident response prototype designed to detect failures, monitor anomalies, stream telemetry, and simulate autonomous incident handling workflows using Microsoft Azure services.
+**CrisisSwarm** is an enterprise-grade, cloud-native intelligent monitoring and incident response command console. It is designed to detect system outages, stream real-time telemetry, monitor active threats, and orchestrate autonomous incident-remediation workflows through interactive multi-agent swarms.
 
-Built as part of a hackathon project under **Theme 5 — Agent Swarms**.
+This repository hosts the **CrisisSwarm Frontend Control Center**—a highly polished, futuristic, and fully responsive Security Operations Center (SOC) dashboard.
 
 ---
 
 # 📌 Problem Statement
 
-Modern enterprises suffer significant downtime due to:
-- delayed incident detection
-- slow manual troubleshooting
-- fragmented monitoring systems
-- lack of intelligent remediation
-
-Traditional monitoring tools only generate alerts after failures occur, forcing engineers to manually investigate logs, analyze failures, and coordinate fixes.
-
-This increases:
-- Mean Time To Resolution (MTTR)
-- operational costs
-- downtime impact
-- alert fatigue
+Modern cloud architectures suffer significant downtime and operational fatigue due to:
+1. **Delayed Incident Detection**: Relying on passive alarms that trigger only after a service has completely crashed.
+2. **Alert Fatigue**: Flooding DevOps teams with unstructured log alarms and false positives.
+3. **Slow Troubleshooting (High MTTR)**: Manually searching databases, analyzing stack traces, and coordinating fixes across distributed nodes.
+4. **No Automated Remediation**: Requiring manual engineer intervention for simple, repeating outages (like memory leaks or CPU scale-ups).
 
 ---
 
-# 💡 Solution
+# 💡 The CrisisSwarm Solution
 
-CrisisSwarm introduces an intelligent monitoring and response pipeline using Azure cloud services.
-
-The platform:
-- monitors application health
-- streams live telemetry
-- detects failed requests
-- generates alerts
-- simulates autonomous incident response workflows
-
-It serves as the foundation for a future AI-driven multi-agent incident remediation system.
+CrisisSwarm solves this by implementing an active observability pipeline coupled with an autonomous multi-agent swarm:
+* **Active Observability**: Streams live latency history, error rates, and CPU/Memory loads via Azure Application Insights and Monitor.
+* **Autonomous Remediation**: Employs specialized swarm agents (AutoScaler, MemoryOptimizer, NetworkShield) to instantly run health checks, apply hotfixes, and provision resources autonomously.
+* **Command & Control**: Provides developers and security leads with a real-time, unified console to inspect nodes, override commands, and monitor alerts.
 
 ---
 
-# ⚡ Features
-
-## ✅ Cloud-Native Deployment
-- Azure App Service deployment
-- Node.js backend hosted on Azure
-
-## ✅ Monitoring & Observability
-- Azure Application Insights integration
-- Real-time telemetry collection
-- Live request monitoring
-- Health endpoint monitoring
-
-## ✅ Incident Detection
-- Failed request detection
-- Response time alerting
-- Real-time log streaming
-- Simulated failure generation
-
-## ✅ Alerting Pipeline
-- Azure Monitor alert rules
-- Smart detection integration
-- Diagnostic logging
-- Log Analytics integration
-
-## ✅ Deployment Pipeline
-- Kudu ZIP deployment
-- GitHub integration
-- Cloud-based deployment workflow
-
----
-
-# 🏗️ Architecture
+# 🏗️ System Architecture
 
 ```mermaid
 flowchart TD
-
     U[👤 Users / Enterprise Systems]
-
     A[☁️ Azure App Service<br/>Node.js Web Application]
-
     B[📊 Application Insights<br/>Telemetry & Monitoring]
-
     C[🚨 Azure Monitor Alerts<br/>Smart Detection Rules]
-
     D[🧠 CrisisSwarm Monitoring Engine<br/>Incident Analysis Layer]
-
-    E[🤖 Future AI Swarm Agents<br/>Autonomous Response System]
-
-    F[🛠 Suggested Remediation<br/>Incident Response Actions]
-
-    G[📂 Log Analytics Workspace]
-
-    H[📜 Diagnostic Logs]
-
-    I[❤️ Health Monitoring]
-
-    J[❌ Failed Request Detection]
-
-    K[📡 Real-Time Telemetry]
+    E[🤖 Swarm Agent Fleet<br/>Autonomous Remediation]
+    F[🛠 Active Remediation<br/>Infrastructure Repairs]
 
     U --> A
     A --> B
@@ -108,137 +47,105 @@ flowchart TD
     D --> E
     E --> F
 
-    B --> G
-    B --> H
-    B --> I
-    B --> J
-    B --> K
-
-    C -->|Anomaly Detection| D
+    C -->|Telemetry Streaming| B
     D -->|Alert Orchestration| E
-    E -->|Autonomous Response Pipeline| F
+    E -->|Self-Healing Pipeline| F
 ```
 
 ---
 
-# ☁️ Azure Services Used
+# ⚡ Dashboard Features
 
-| Service | Purpose |
-|---|---|
-| Azure App Service | Hosting Node.js application |
-| Application Insights | Monitoring & telemetry |
-| Azure Monitor | Alerting & anomaly detection |
-| Log Analytics Workspace | Centralized logging |
-| Azure Alerts | Incident notification |
-| Kudu Deployment Engine | ZIP deployment pipeline |
+The Next.js 14 frontend implements an interactive, immersive, and fully responsive command center interface:
+
+### 1. 📊 Command Center (Main Dashboard)
+* **Integrity Dial**: An animated SVG integrity dial displaying overall system health status, tracking uptime, active outages, and SLA logs.
+* **Real-time KPI Metrics**: Tracks System Health, Outage Count, Average Latency, and Request rate with trend indicators.
+* **Telemetry Charts**: Interactive Recharts areas and lines tracking CPU loads, memory usage, and response times over 24-hour cycles.
+* **Alert Feed**: Color-coded, severity-filtered notification log of recent alerts.
+
+### 2. 🛡️ Swarm Operations (`/agents`)
+* **Interactive SVG Topology**: A visual map displaying connected swarm nodes and hubs with pulsing connection beams and animated packet streams. Clicking any node loads its active role and real-time CPU/Memory telemetry.
+* **Live Operations Terminal**: A scrolling command console streaming simulated agent operations and repair logs in real-time (updating every 3 seconds) with pause/resume capability.
+* **Agent Fleet Grid**: Detailed cards for all active agents (AutoScaler-Alpha, MemoryOptimizer-Beta, etc.) displaying success rates, CPU bounds, memory utilization, and total outages mitigated.
+* **Command Executor**: A queue widget tracking active remediation scripts (e.g. `SCALE_UP_ALPHA`, `RESTART_DATABASE`).
+
+### 3. 🚨 Incident Center (`/incidents`)
+* **Severity & Status Filters**: Instantly filters open issues by severity (Critical, High, Medium, Low) and state (Active, Investigating, Resolved).
+* **Outage Details Drawer**: Clicking an incident slides out a detailed drawer containing timeline logs, affected microservices, and agent comments.
+
+### 4. 📈 Advanced Analytics (`/analytics`)
+* **Load Breakdown**: Doughnut charts displaying request loads per service (Auth, Gateway, DB, Cache).
+* **Agent Efficiency Heatmap**: Plots response time metrics against success ratios.
+* **Topology Heatmap**: Color-coded nodes highlighting heavy-traffic servers.
+
+### 5. ☁️ Live Azure Observability (`/azure`)
+* **Live Connection Badge**: Measures latency and reports connection state (`live`, `degraded`, or `offline`) to the live Azure Express.js backend.
+* **Failover Alert Simulator**: Exposes a one-click trigger to hit the `/error` endpoint of the backend, verifying that App Insights triggers the Azure Monitor alert pipeline.
+
+### 6. ⚙️ SOC Settings (`/settings`)
+* Tuning sliders for CPU/Memory alert thresholds.
+* Toggles for notification endpoints (Slack Webhooks, SMS, Email).
+* Agent permissions (Auto-scaling, Auto-remediation, Maintenance suppression).
 
 ---
 
-# 🔥 Demo Workflow
+# 🛠️ Tech Stack & Styling
 
-1. User accesses the web application
-2. Requests are monitored through Application Insights
-3. Azure Monitor tracks telemetry and anomalies
-4. Failed requests generate monitoring events
-5. Alert rules detect abnormal behavior
-6. CrisisSwarm processes incidents for future remediation workflows
+* **Core**: Next.js 14 (App Router), React 18, TypeScript (strict mode)
+* **Styling**: TailwindCSS with CSS custom property HSL variables
+* **Aesthetics**: Glassmorphism cards, upper border sheens, hover cyber grid lines, and cursor-tracking radial spotlight glows (spotlight spotlight highlights are hardware-accelerated).
+* **Animations**: Framer Motion
+* **Charts**: Recharts
+* **Icons**: Lucide React
 
 ---
 
-# 🌐 Endpoints
+# 🚀 Getting Started
 
-## Health Endpoint
+### Prerequisites
+* Node.js 18+
+* npm or yarn
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Princedeepu381/CrisisSwarm.git
+   cd CrisisSwarm
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up environment variables:
+   Create a `.env.local` file in the root directory:
+   ```env
+   # Set to your local or deployed backend API URL
+   NEXT_PUBLIC_API_URL=https://crisisswarmapp-bhfvchcd6fhgtdd.southeastasia-01.azurewebsites.net
+   ```
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+5. Open your browser and navigate to **[http://localhost:3000](http://localhost:3000)**.
+
+### Build for Production
 ```bash
-/health
+npm run build
+npm start
 ```
 
-Returns:
-```text
-Healthy
-```
-
-## Failure Simulation Endpoint
-```bash
-/error
-```
-
-Used to intentionally trigger failures and monitoring alerts.
-
 ---
 
-# 📊 Monitoring Capabilities
+# ☁️ Azure Integration Details
+CrisisSwarm interfaces with:
+* **Azure App Service**: Hosts the core API and telemetry endpoints.
+* **Application Insights**: Collects live request logs, exception traces, and dependency health.
+* **Azure Monitor**: Triggers alerts when metrics violate configured thresholds.
 
-- Real-time request logging
-- Failed request monitoring
-- Response time tracking
-- Health endpoint monitoring
-- Live telemetry streaming
-- Diagnostic log collection
-
----
-
-# 🚀 Future Scope
-
-## AI Incident Response Swarm
-Future versions of CrisisSwarm will include:
-- autonomous remediation agents
-- AI-based root cause analysis
-- GPT-powered incident summaries
-- multi-agent orchestration
-- predictive anomaly detection
-- compliance-aware audit logging
-- Microsoft Teams integration
-- self-healing infrastructure workflows
-
----
-
-# 🛠️ Tech Stack
-
-- Node.js
-- Microsoft Azure
-- Azure Monitor
-- Application Insights
-- Azure App Service
-- GitHub
-- Kudu Deployment Engine
-
----
-
-# 📸 Project Screenshots
-
-_Add Azure dashboard, deployment logs, monitoring graphs, and live telemetry screenshots here._
-
----
-
-# 🎥 Demo Video
-
-_Add demo video link here._
+To test the alert pipeline, visit the **Azure Integration** page on the dashboard and click **Trigger /error Alert** to generate a synthetic backend error.
 
 ---
 
 # 👨‍💻 Author
-
 **Deepak M**
-
----
-
-# 🏆 Hackathon Theme
-
-## Primary Theme
-**Theme 5 — Agent Swarms**
-
-## Secondary Relevance
-- Security
-- Productivity
-- Autonomous Operations
-
----
-
-# 📌 Project Status
-
-✅ Live Azure Deployment  
-✅ Monitoring & Telemetry  
-✅ Alerting Pipeline  
-✅ Failure Simulation  
-✅ Incident Detection Prototype  
-🚧 AI Swarm Expansion In Progress
