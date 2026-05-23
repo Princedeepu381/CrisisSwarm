@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -48,6 +49,30 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const { status, latencyMs } = useAzureHealth(30000);
+  const [user, setUser] = useState<{ name: string; role: string; avatar: string } | null>(null);
+
+  useEffect(() => {
+    try {
+      const userData = localStorage.getItem('crisisswarm_user');
+      if (userData) {
+        setUser(JSON.parse(userData));
+      } else {
+        setUser({
+          name: 'Incident Commander',
+          role: 'Security Operations Lead',
+          avatar: 'IC',
+        });
+      }
+    } catch (e) {
+      // Fallback
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('crisisswarm_authed');
+    localStorage.removeItem('crisisswarm_user');
+    window.location.href = '/login';
+  };
 
   const azureColor =
     status === 'live'
@@ -138,7 +163,7 @@ export default function Sidebar({
       </div>
 
       {/* Navigation Sections */}
-      <nav className="relative flex-1 overflow-y-auto py-5 px-3 space-y-5 z-10 max-h-[calc(100vh-18rem)] select-none">
+      <nav className="relative flex-1 overflow-y-auto py-5 px-3 space-y-5 z-10 max-h-[calc(100vh-21rem)] select-none">
         {mainNavigation.map((section, idx) => (
           <div key={idx} className="space-y-1.5">
             {!isCollapsed && (
@@ -251,6 +276,44 @@ export default function Sidebar({
               System Online
             </span>
           )}
+        </div>
+
+        {/* User Profile & Logout */}
+        <div className="border-t border-cs-blue-400/10 pt-3 mt-1">
+          <div className="flex items-center justify-between gap-2">
+            {isCollapsed ? (
+              <motion.button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center p-2.5 rounded-xl border border-cs-accent-danger/20 bg-cs-accent-danger/5 hover:bg-cs-accent-danger/15 text-cs-accent-danger transition-all duration-200"
+                whileHover={{ scale: 1.05 }}
+                title="Logout"
+              >
+                <LucideIcons.LogOut className="w-4 h-4" />
+              </motion.button>
+            ) : (
+              <div className="flex items-center justify-between w-full bg-cs-dark-700/30 border border-cs-blue-400/5 rounded-xl p-2.5">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cs-blue-500 to-cs-accent-cyan flex items-center justify-center text-xs font-bold text-white shadow-glow-sm shadow-cs-blue-500/10 flex-shrink-0">
+                    {user?.avatar || 'IC'}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-cs-dark-50 truncate">{user?.name || 'Commander'}</p>
+                    <p className="text-[10px] text-cs-dark-200 opacity-60 truncate">{user?.role || 'Ops Lead'}</p>
+                  </div>
+                </div>
+                <motion.button
+                  id="btn-logout"
+                  onClick={handleLogout}
+                  className="p-2 rounded-lg border border-cs-accent-danger/20 bg-cs-accent-danger/5 hover:bg-cs-accent-danger/15 text-cs-accent-danger transition-all duration-200 flex-shrink-0 ml-1"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  title="Logout"
+                >
+                  <LucideIcons.LogOut className="w-3.5 h-3.5" />
+                </motion.button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </aside>
