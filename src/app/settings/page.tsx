@@ -198,6 +198,49 @@ export default function SettingsPage() {
       {/* Content */}
       <div className="p-6 md:p-8 space-y-6 max-w-4xl">
 
+        {/* Azure Integration Panel */}
+        <Section
+          icon={LucideIcons.Cloud}
+          title="Azure Integration"
+          description="Manage cloud connectivity, API status, and deployment health"
+          delay={0.05}
+        >
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 rounded-lg bg-cs-dark-800/50 border border-cs-blue-400/10 hover:border-cs-blue-400/30 transition-all">
+              <div>
+                <p className="text-sm font-semibold text-cs-dark-50">API Connection Status</p>
+                <p className="text-xs text-cs-dark-200 opacity-60 mt-0.5">Connected to Azure Serverless Functions</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cs-accent-success opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-cs-accent-success"></span>
+                </span>
+                <span className="text-sm font-bold text-cs-accent-success">Healthy</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-4 rounded-lg bg-cs-dark-800/50 border border-cs-blue-400/10 hover:border-cs-blue-400/30 transition-all">
+              <div>
+                <p className="text-sm font-semibold text-cs-dark-50">Deployment Environment</p>
+                <p className="text-xs text-cs-dark-200 opacity-60 mt-0.5">Azure Static Web Apps (Production)</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <LucideIcons.CheckCircle className="w-4 h-4 text-cs-blue-400" />
+                <span className="text-sm font-bold text-cs-blue-400">Deployed</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-4 rounded-lg bg-cs-dark-800/50 border border-cs-blue-400/10 hover:border-cs-blue-400/30 transition-all">
+              <div>
+                <p className="text-sm font-semibold text-cs-dark-50">Azure Monitor Telemetry</p>
+                <p className="text-xs text-cs-dark-200 opacity-60 mt-0.5">Streaming real-time metrics</p>
+              </div>
+              <Toggle id="toggle-azure-monitor" enabled={true} onChange={() => {}} />
+            </div>
+          </div>
+        </Section>
+
         {/* Alert Thresholds */}
         <Section
           icon={LucideIcons.SlidersHorizontal}
