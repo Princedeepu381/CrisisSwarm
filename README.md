@@ -73,6 +73,8 @@ It serves as the foundation for a future AI-driven multi-agent incident remediat
 ---
 
 # 🏗️ Architecture
+
+```mermaid
 flowchart TD
 
     U[👤 Users / Enterprise Systems]
@@ -115,15 +117,128 @@ flowchart TD
     C -->|Anomaly Detection| D
     D -->|Alert Orchestration| E
     E -->|Autonomous Response Pipeline| F
+```
 
-    style A fill:#0078D4,color:#fff,stroke:#005A9E
-    style B fill:#00BCF2,color:#fff,stroke:#0078D4
-    style C fill:#FFB900,color:#000,stroke:#D18F00
-    style D fill:#6B69D6,color:#fff,stroke:#4B48B5
-    style E fill:#107C10,color:#fff,stroke:#0B5E0B
-    style F fill:#D83B01,color:#fff,stroke:#A62D00
-    style G fill:#505050,color:#fff
-    style H fill:#505050,color:#fff
-    style I fill:#505050,color:#fff
-    style J fill:#505050,color:#fff
-    style K fill:#505050,color:#fff
+---
+
+# ☁️ Azure Services Used
+
+| Service | Purpose |
+|---|---|
+| Azure App Service | Hosting Node.js application |
+| Application Insights | Monitoring & telemetry |
+| Azure Monitor | Alerting & anomaly detection |
+| Log Analytics Workspace | Centralized logging |
+| Azure Alerts | Incident notification |
+| Kudu Deployment Engine | ZIP deployment pipeline |
+
+---
+
+# 🔥 Demo Workflow
+
+1. User accesses the web application
+2. Requests are monitored through Application Insights
+3. Azure Monitor tracks telemetry and anomalies
+4. Failed requests generate monitoring events
+5. Alert rules detect abnormal behavior
+6. CrisisSwarm processes incidents for future remediation workflows
+
+---
+
+# 🌐 Endpoints
+
+## Health Endpoint
+```bash
+/health
+```
+
+Returns:
+```text
+Healthy
+```
+
+## Failure Simulation Endpoint
+```bash
+/error
+```
+
+Used to intentionally trigger failures and monitoring alerts.
+
+---
+
+# 📊 Monitoring Capabilities
+
+- Real-time request logging
+- Failed request monitoring
+- Response time tracking
+- Health endpoint monitoring
+- Live telemetry streaming
+- Diagnostic log collection
+
+---
+
+# 🚀 Future Scope
+
+## AI Incident Response Swarm
+Future versions of CrisisSwarm will include:
+- autonomous remediation agents
+- AI-based root cause analysis
+- GPT-powered incident summaries
+- multi-agent orchestration
+- predictive anomaly detection
+- compliance-aware audit logging
+- Microsoft Teams integration
+- self-healing infrastructure workflows
+
+---
+
+# 🛠️ Tech Stack
+
+- Node.js
+- Microsoft Azure
+- Azure Monitor
+- Application Insights
+- Azure App Service
+- GitHub
+- Kudu Deployment Engine
+
+---
+
+# 📸 Project Screenshots
+
+_Add Azure dashboard, deployment logs, monitoring graphs, and live telemetry screenshots here._
+
+---
+
+# 🎥 Demo Video
+
+_Add demo video link here._
+
+---
+
+# 👨‍💻 Author
+
+**Deepak M**
+
+---
+
+# 🏆 Hackathon Theme
+
+## Primary Theme
+**Theme 5 — Agent Swarms**
+
+## Secondary Relevance
+- Security
+- Productivity
+- Autonomous Operations
+
+---
+
+# 📌 Project Status
+
+✅ Live Azure Deployment  
+✅ Monitoring & Telemetry  
+✅ Alerting Pipeline  
+✅ Failure Simulation  
+✅ Incident Detection Prototype  
+🚧 AI Swarm Expansion In Progress
