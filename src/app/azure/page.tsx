@@ -37,7 +37,7 @@ const AZURE_FEATURES = [
   { icon: 'Database',    label: 'Database connectivity',             done: true  },
   { icon: 'Lock',        label: 'Authentication system',             done: true  },
   { icon: 'Cpu',         label: 'AI agent API endpoints',            done: true  },
-  { icon: 'Wifi',        label: 'WebSocket real-time streaming',     done: true  },
+  { icon: 'Wifi',        label: 'SSE real-time streaming',           done: true  },
 ];
 
 export default function AzurePage() {

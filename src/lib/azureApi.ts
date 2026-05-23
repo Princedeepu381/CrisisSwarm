@@ -1,7 +1,7 @@
 // ─── Azure Backend API Client ─────────────────────────────────────────────────
-// Live backend: https://crisisswarmapp-bhfvchcd6fhgtdd.southeastasia-01.azurewebsites.net
+// Live backend: https://crisisswarmapp-bhfvchhcd6fhgtdd.southeastasia-01.azurewebsites.net
 
-export const AZURE_BASE_URL = '';
+export const AZURE_BASE_URL = 'https://crisisswarmapp-bhfvchhcd6fhgtdd.southeastasia-01.azurewebsites.net';
 
 // ─── Response Types ───────────────────────────────────────────────────────────
 
@@ -63,7 +63,25 @@ async function azureFetch<T>(
 
   const start = Date.now();
   try {
-    const res = await fetch(`${AZURE_BASE_URL}${path}`, {
+    let targetUrl = AZURE_BASE_URL;
+    let targetPath = path;
+
+    // Local fallback: Route calls to local Next.js API when running on localhost
+    if (typeof window !== 'undefined') {
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (isLocal) {
+        targetUrl = window.location.origin;
+        if (path === '/') {
+          targetPath = '/api';
+        } else if (path === '/health') {
+          targetPath = '/api/health';
+        } else if (path === '/error') {
+          targetPath = '/api/error';
+        }
+      }
+    }
+
+    const res = await fetch(`${targetUrl}${targetPath}`, {
       signal: controller.signal,
       headers: { Accept: 'application/json' },
       // No-store so we always get fresh data
@@ -84,6 +102,9 @@ async function azureFetch<T>(
       const text = await res.text();
       // Wrap plain-text responses in an object
       data = { message: text } as T;
+      if (path === '/health' && text.trim().toLowerCase() === 'healthy') {
+        (data as Record<string, unknown>).status = 'healthy';
+      }
     }
 
     return { data, latencyMs, error: null };
@@ -101,14 +122,14 @@ async function azureFetch<T>(
 // ─── Public API Methods ───────────────────────────────────────────────────────
 
 export const azureApi = {
-  /** GET /api — root status */
-  getRoot: () => azureFetch<AzureRootResponse>('/api'),
+  /** GET / — root status */
+  getRoot: () => azureFetch<AzureRootResponse>('/'),
 
-  /** GET /api/health — health check */
-  getHealth: () => azureFetch<AzureHealthResponse>('/api/health'),
+  /** GET /health — health check */
+  getHealth: () => azureFetch<AzureHealthResponse>('/health'),
 
-  /** GET /api/error — simulate failure (for alert testing) */
-  triggerError: () => azureFetch<{ error: string }>('/api/error'),
+  /** GET /error — simulate failure (for alert testing) */
+  triggerError: () => azureFetch<{ error: string }>('/error'),
 
   /** GET /api/incidents — list incidents */
   getIncidents: () => azureFetch<unknown[]>('/api/incidents'),
