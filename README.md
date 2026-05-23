@@ -144,7 +144,7 @@ The Next.js 14 frontend implements an interactive, immersive, and fully responsi
    Create a `.env.local` file in the root directory:
    ```env
    # Set to your local or deployed backend API URL
-   NEXT_PUBLIC_API_URL=https://crisisswarmapp-bhfvchcd6fhgtdd.southeastasia-01.azurewebsites.net
+   NEXT_PUBLIC_API_URL=http://localhost:5000
    ```
 4. Run the development server:
    ```bash
