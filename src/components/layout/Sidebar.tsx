@@ -99,7 +99,7 @@ export default function Sidebar({
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-screen transition-all duration-300 z-50
+      className={`fixed left-0 top-0 h-screen transition-all duration-300 z-50 flex flex-col
         ${isCollapsed ? 'lg:w-20' : 'lg:w-64'} 
         w-64
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
@@ -163,11 +163,11 @@ export default function Sidebar({
       </div>
 
       {/* Navigation Sections */}
-      <nav className="relative flex-1 overflow-y-auto py-5 px-3 space-y-5 z-10 max-h-[calc(100vh-21rem)] select-none">
+      <nav className="relative flex-1 py-3 px-3 space-y-3 z-10 overflow-y-auto scrollbar-none select-none">
         {mainNavigation.map((section, idx) => (
           <div key={idx} className="space-y-1.5">
             {!isCollapsed && (
-              <h3 className="px-3 py-1.5 text-[10px] font-bold text-cs-dark-200/50 uppercase tracking-widest">
+              <h3 className="px-3 py-1 text-[10px] font-bold text-cs-dark-200/50 uppercase tracking-widest">
                 {section.label}
               </h3>
             )}
@@ -179,7 +179,7 @@ export default function Sidebar({
                 return (
                   <Link key={item.id} href={item.href} onClick={() => setIsMobileOpen(false)}>
                     <motion.div
-                      className={`relative group px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer border
+                      className={`relative group px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer border
                         ${
                           active
                             ? 'bg-cs-blue-500/15 border-cs-blue-400/30 text-cs-blue-300 shadow-glow-sm shadow-cs-blue-500/5'
@@ -241,7 +241,7 @@ export default function Sidebar({
       </nav>
 
       {/* Footer Section */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-cs-blue-400/10 p-4 space-y-2 bg-gradient-to-t from-cs-dark-900 to-transparent z-10 select-none">
+      <div className="relative mt-auto border-t border-cs-blue-400/10 p-4 space-y-2 bg-gradient-to-t from-cs-dark-900 to-transparent z-10 select-none">
         {/* Azure status */}
         <Link href="/azure" onClick={() => setIsMobileOpen(false)}>
           <motion.div

@@ -66,19 +66,16 @@ async function azureFetch<T>(
     let targetUrl = AZURE_BASE_URL;
     let targetPath = path;
 
-    // Local fallback: Route calls to local Next.js API when running on localhost
     if (typeof window !== 'undefined') {
-      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      if (isLocal) {
-        targetUrl = window.location.origin;
-        if (path === '/') {
-          targetPath = '/api';
-        } else if (path === '/health') {
-          targetPath = '/api/health';
-        } else if (path === '/error') {
-          targetPath = '/api/error';
-        }
-      }
+      targetUrl = window.location.origin;
+    }
+
+    if (path === '/') {
+      targetPath = '/api';
+    } else if (path === '/health') {
+      targetPath = '/api/health';
+    } else if (path === '/error') {
+      targetPath = '/api/error';
     }
 
     const res = await fetch(`${targetUrl}${targetPath}`, {

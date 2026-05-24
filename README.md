@@ -210,11 +210,10 @@ When a crisis is triggered, the system automatically calculates:
 | **Azure Static Web Apps** | Production hosting with global CDN, HTTPS, and integrated serverless functions |
 | **Azure OpenAI (GPT-4o)** | Powers the autonomous agent swarm — live API calls for real-time incident analysis |
 | **Azure Cosmos DB** | Production database target — globally distributed, serverless, Prisma-compatible via MongoDB API |
-| **Azure App Service** | Backend API infrastructure for cloud-native deployment |
+| **Azure Serverless Functions** | Next.js API routes deploy as Azure Functions within Static Web Apps for zero-infrastructure backend hosting |
 | **Azure Monitor** | Architecture designed for Azure Monitor/Application Insights telemetry ingestion |
 | **GitHub Actions** | CI/CD pipeline — automatic build and deploy on every push to `main` |
 | **GitHub Copilot** | AI-assisted code generation throughout development (disclosed below) |
-| **Azure Serverless Functions** | Next.js API routes deploy as Azure Functions within Static Web Apps |
 
 ---
 
@@ -317,13 +316,13 @@ When a crisis is triggered, the system automatically calculates:
 | Recharts | 2.x | Data visualization charts |
 | Lucide React | Latest | Icon system |
 
-### Cloud & DevOps
+### Cloud, DevOps & Testing
 | Technology | Purpose |
 |-----------|---------|
-| Azure Static Web Apps | Production hosting with global CDN |
-| Azure App Service | Backend API infrastructure |
+| Azure Static Web Apps | Production hosting with global CDN & Integrated Serverless Functions |
 | Azure OpenAI (GPT-4o) | AI swarm intelligence |
 | GitHub Actions | CI/CD pipeline |
+| Vitest | Fast unit and integration testing runner |
 
 ### Design System
 - 🌑 Dark futuristic cybersecurity theme
@@ -380,6 +379,18 @@ AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
 AZURE_OPENAI_API_VERSION=2024-02-15-preview
 ```
 
+### Running Tests
+
+CrisisSwarm includes a comprehensive unit and integration test suite powered by Vitest to validate client-side API routing and serverless API endpoints:
+
+```bash
+# Run all tests once
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+```
+
 ### Production Build
 
 ```bash
@@ -396,12 +407,16 @@ CrisisSwarm/
 ├── src/
 │   ├── app/                          # Next.js App Router pages
 │   │   ├── api/                      # Serverless API routes
-│   │   │   ├── health/route.ts       # System health endpoint
+│   │   │   ├── health/
+│   │   │   │   ├── route.ts          # System health endpoint
+│   │   │   │   └── health.test.ts    # Health API integration tests
 │   │   │   ├── incidents/route.ts    # Incidents CRUD + lifecycle engine
 │   │   │   ├── agents/route.ts       # Swarm agent state
 │   │   │   ├── telemetry/route.ts    # Crisis-reactive telemetry
 │   │   │   ├── alerts/route.ts       # Alert management
-│   │   │   └── stream/route.ts       # SSE real-time stream
+│   │   │   ├── stream/route.ts       # SSE real-time stream
+│   │   │   ├── route.ts              # Root serverless API route
+│   │   │   └── route.test.ts         # Root API integration tests
 │   │   ├── dashboard/                # Command Center page
 │   │   ├── agents/                   # AI Swarm Operations page
 │   │   ├── incidents/                # Incident Center page
@@ -421,12 +436,14 @@ CrisisSwarm/
 │   └── lib/
 │       ├── db.ts                     # In-memory state engine
 │       ├── mockData.ts               # Seed data for realistic demo
-│       └── azureApi.ts               # Azure API client
+│       ├── azureApi.ts               # Azure API client
+│       └── azureApi.test.ts          # API client unit tests
 ├── prisma/
 │   └── schema.prisma                 # Database schema
 ├── .github/
 │   └── workflows/                    # GitHub Actions CI/CD
 ├── tailwind.config.ts
+├── vitest.config.ts                  # Vitest path mappings & test config
 ├── tsconfig.json
 ├── .env.example                      # Environment variable template
 └── package.json

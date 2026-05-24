@@ -35,7 +35,7 @@ export function useAzureHealth(pollIntervalMs = 30000): AzureHealthState & { ref
     lastChecked: null,
     error: null,
     isLoading: true,
-    backendUrl: AZURE_BASE_URL,
+    backendUrl: typeof window !== 'undefined' ? window.location.origin : AZURE_BASE_URL,
   });
 
   const isMounted = useRef(true);
@@ -70,7 +70,7 @@ export function useAzureHealth(pollIntervalMs = 30000): AzureHealthState & { ref
       lastChecked: new Date(),
       error: healthResult.error,
       isLoading: false,
-      backendUrl: AZURE_BASE_URL,
+      backendUrl: typeof window !== 'undefined' ? window.location.origin : AZURE_BASE_URL,
     });
   }, []);
 

@@ -7,7 +7,6 @@ import GlassCard from '@/components/common/GlassCard';
 import { useAzureHealth } from '@/hooks/useAzureData';
 import AzureConnectionBadge from '@/components/common/AzureConnectionBadge';
 import * as LucideIcons from 'lucide-react';
-import { AZURE_BASE_URL } from '@/lib/azureApi';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -87,21 +86,16 @@ export default function AzurePage() {
                     Backend Operational
                   </span>
                 </div>
-                <p className="text-cs-dark-50 font-bold text-xl mb-1">CrisisSwarm Azure App Service</p>
-                <a
-                  href={AZURE_BASE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-mono text-cs-blue-400 hover:underline opacity-80 flex items-center gap-1.5"
-                >
-                  <LucideIcons.ExternalLink className="w-3.5 h-3.5" />
-                  {AZURE_BASE_URL.replace('https://', '')}
-                </a>
+                <p className="text-cs-dark-50 font-bold text-xl mb-1">CrisisSwarm Serverless API</p>
+                <span className="text-sm font-mono text-cs-blue-400 opacity-80 flex items-center gap-1.5">
+                  <LucideIcons.Cloud className="w-3.5 h-3.5" />
+                  Integrated Serverless Functions
+                </span>
               </div>
               <div className="flex flex-col gap-1 text-right">
                 <span className="text-xs text-cs-dark-200 opacity-50">Deployed via</span>
-                <span className="text-sm font-bold text-cs-dark-50">Kudu ZIP Deploy</span>
-                <span className="text-xs text-cs-dark-200 opacity-50">Azure App Service Plan</span>
+                <span className="text-sm font-bold text-cs-dark-50">Azure Static Web Apps</span>
+                <span className="text-xs text-cs-dark-200 opacity-50">Serverless Architecture</span>
               </div>
             </div>
           </div>

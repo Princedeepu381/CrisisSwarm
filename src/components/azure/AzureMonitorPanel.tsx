@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useAzureHealth, useAzureLatencyHistory, useAzureErrorTrigger } from '@/hooks/useAzureData';
-import { AZURE_BASE_URL } from '@/lib/azureApi';
 import AzureConnectionBadge from '@/components/common/AzureConnectionBadge';
 import GlassCard from '@/components/common/GlassCard';
 import * as LucideIcons from 'lucide-react';
@@ -90,7 +89,7 @@ export default function AzureMonitorPanel() {
             {isLoading && <LucideIcons.Loader2 className="w-4 h-4 text-cs-blue-400 animate-spin" />}
           </div>
           <p className="text-xs text-cs-dark-200 opacity-50">
-            Real-time connection to Azure App Service
+            Real-time connection to Serverless API
           </p>
         </div>
 
@@ -135,14 +134,9 @@ export default function AzureMonitorPanel() {
         <InfoRow
           label="Endpoint"
           value={
-            <a
-              href={AZURE_BASE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-cs-blue-400 hover:underline truncate max-w-[200px] inline-block"
-            >
-              {AZURE_BASE_URL.replace('https://', '')}
-            </a>
+            <span className="text-cs-blue-400 font-mono">
+              /api/health
+            </span>
           }
         />
       </div>

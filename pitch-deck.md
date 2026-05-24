@@ -68,8 +68,9 @@
   * **Persistence Layer:** Prisma Client + SQLite database for zero-config state management.
   * **Host & Security:** Azure Static Web Apps (CDN, HTTPS, Integrated Functions).
   * **Real-time Engine:** Server-Sent Events (SSE) streaming live logs and agent statuses to clients instantly.
+  * **Quality Assurance:** Vitest unit and integration testing suite validating serverless endpoints and client-side API routing.
 * **Visual Concept:** Interactive flow diagram from Telemetry Spikes -> Next.js API Routes -> In-Memory State/Prisma -> SSE Broadcast -> Frontend Clients.
-* **Presenter Script:** "CrisisSwarm is built on Next.js 15, using serverless API routes deployed on Azure Static Web Apps. Ephemeral telemetry and state reside in an optimized cache layer, backed by Prisma and SQLite. Real-time updates are pushed to the client using a high-throughput Server-Sent Events stream, ensuring operators get instant telemetry data."
+* **Presenter Script:** "CrisisSwarm is built on Next.js 15, using serverless API routes deployed on Azure Static Web Apps. Ephemeral telemetry and state reside in an optimized cache layer, backed by Prisma and SQLite. Real-time updates are pushed to the client using a high-throughput Server-Sent Events stream, ensuring operators get instant telemetry data. We also integrated a robust Vitest test suite validating both client-side API routing and serverless health logic to ensure production-grade reliability."
 
 ---
 
