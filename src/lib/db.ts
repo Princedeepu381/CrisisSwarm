@@ -4,7 +4,7 @@
 // that doesn't need persistence (metrics, heatmap, etc.).
 // Includes auto-seed on first run.
 
-import { PrismaClient } from '@prisma/client';
+
 import {
   mockIncidents,
   mockAlerts,
@@ -18,17 +18,26 @@ import {
 
 // ─── Prisma Client Singleton ─────────────────────────────────────────────────
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+// ─── Prisma Client Singleton (with defensive runtime initialization) ───────────
 
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
-  });
+let prismaClientInstance: any = null;
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
+try {
+  const { PrismaClient } = require('@prisma/client');
+  const globalForPrisma = global as unknown as { prisma: any };
+  
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = new PrismaClient({
+      log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
+    });
+  }
+  prismaClientInstance = globalForPrisma.prisma;
+} catch (err) {
+  // Silent catch with error log — fallback to pure in-memory state engine
+  console.error('[CrisisSwarm] Failed to initialize Prisma Client (falling back to pure in-memory mode):', err);
 }
+
+export const prisma = prismaClientInstance;
 
 // ─── Re-export Interfaces for Backward Compatibility ─────────────────────────
 
@@ -174,6 +183,12 @@ export const db = globalForDb.db;
 export async function seedDatabase(): Promise<void> {
   if (globalForDb.seeded) return;
 
+  if (!prisma) {
+    console.log('[CrisisSwarm] Prisma database unavailable. Running on pure in-memory state engine.');
+    globalForDb.seeded = true;
+    return;
+  }
+
   try {
     // Check if agents already exist
     const agentCount = await prisma.agent.count();
@@ -252,6 +267,7 @@ export async function seedDatabase(): Promise<void> {
 // ─── Helper: Sync incident to Prisma ─────────────────────────────────────────
 
 export async function persistIncident(incident: Incident): Promise<void> {
+  if (!prisma) return;
   try {
     await prisma.incident.upsert({
       where: { id: incident.id },
@@ -282,6 +298,7 @@ export async function persistIncident(incident: Incident): Promise<void> {
 // ─── Helper: Persist terminal log to Prisma ──────────────────────────────────
 
 export async function persistTerminalLog(log: TerminalLog): Promise<void> {
+  if (!prisma) return;
   try {
     await prisma.terminalLog.create({
       data: {
