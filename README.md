@@ -23,7 +23,7 @@
 
 <br/>
 
-🔗 **[Live Demo](https://calm-ocean-08f5d1400.7.azurestaticapps.net)** &nbsp;·&nbsp; 📂 **[Repository](https://github.com/Princedeepu381/CrisisSwarm)** &nbsp;·&nbsp; 🎯 **[Pitch Deck](./pitch-deck.md)** &nbsp;·&nbsp; 🎥 **[Demo Script](./demo-script.md)**
+🔗 **[Live Demo](https://calm-ocean-08f5d1400.7.azurestaticapps.net)** &nbsp;·&nbsp; 📂 **[Repository](https://github.com/Princedeepu381/CrisisSwarm)** &nbsp;·&nbsp; 🎯 **[Pitch Deck](./pitch-deck.pdf)**
 
 </div>
 
@@ -73,11 +73,11 @@ Follow these steps to experience the full autonomous incident response lifecycle
 ## 🎯 Problem Statement
 ### Theme 2: Security in the Agentic Future
 
-Modern cloud infrastructure failures cost enterprises an average of **$5,600 per minute** of downtime (Gartner). Current incident response systems rely heavily on human operators who must manually retrieve telemetry, plan remediation, execute scripts, and validate security. Under extreme time pressure, this human-in-the-loop workflow results in an average MTTR (Mean Time to Resolution) of **4+ hours**.
+Modern cloud infrastructure failures cost enterprises an average of **$5,600 per minute** of downtime (Gartner). Current incident response systems rely heavily on human operators who must manually retrieve logs, correlate signals, and execute remediations across distributed systems.
 
 ### The Swarm Deficit
 
-While single AI agents can assist with individual tasks, a single agent lacks the multi-domain capabilities to handle the entire incident lifecycle alone. Production-grade autonomous operations require a coordinated **swarm of specialized agents** working in parallel:
+While single AI agents can assist with individual tasks, a single agent lacks the multi-domain capabilities to handle the entire incident lifecycle alone. Production-grade autonomous operations require specialized roles:
 
 1. **Retrievers** — continuously ingest and filter multi-region telemetry noise
 2. **Planners** — diagnose root causes across complex distributed dependency graphs
@@ -122,33 +122,62 @@ Each stage transition generates real-time AI agent logs, telemetry correlations,
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Azure Static Web Apps                         │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │                   Next.js 15 Frontend                      │  │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────┐ │  │
-│  │  │Dashboard │ │ Agents   │ │Incidents │ │  Analytics   │ │  │
-│  │  │Command   │ │ Swarm    │ │ Center   │ │  Telemetry   │ │  │
-│  │  │ Center   │ │Operations│ │          │ │              │ │  │
-│  │  └────┬─────┘ └────┬─────┘ └────┬─────┘ └──────┬───────┘ │  │
-│  │       └─────────────┴────────────┴───────────────┘         │  │
-│  │                    fetch('/api/*')                          │  │
-│  │  ┌──────────────────────────────────────────────────────┐  │  │
-│  │  │           Next.js API Routes (Serverless)             │  │  │
-│  │  │  ┌─────────┐ ┌──────────┐ ┌──────────┐ ┌────────┐   │  │  │
-│  │  │  │ /health │ │/incidents│ │ /agents  │ │/alerts │   │  │  │
-│  │  │  └─────────┘ └──────────┘ └──────────┘ └────────┘   │  │  │
-│  │  │         AI Lifecycle Engine (Autonomous Resolution)   │  │  │
-│  │  └──────────────────────────────────────────────────────┘  │  │
-│  │                    SSE Real-time Stream                     │  │
-│  │  ┌──────────────────────────────────────────────────────┐  │  │
-│  │  │              In-Memory State Engine                   │  │  │
-│  │  │        Incidents · Agents · Telemetry · Alerts        │  │  │
-│  │  └──────────────────────────────────────────────────────┘  │  │
-│  └───────────────────────────────────────────────────────────┘  │
-│           GitHub Actions CI/CD → Auto-deploy on push            │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph "Azure Static Web Apps"
+        subgraph "Next.js 15 Frontend"
+            Dashboard["🎛️ Dashboard<br/>Command Center"]
+            Agents["🤖 Agents<br/>Swarm Operations"]
+            Incidents["🚨 Incidents<br/>Center"]
+            Analytics["📊 Analytics<br/>Telemetry"]
+        end
+        
+        subgraph "Client Layer"
+            Dashboard --> API["fetch('/api/*')"]
+            Agents --> API
+            Incidents --> API
+            Analytics --> API
+        end
+        
+        subgraph "API Routes - Serverless"
+            Health["/health"]
+            IncidentsAPI["/incidents"]
+            AgentsAPI["/agents"]
+            Alerts["/alerts"]
+            Stream["/stream<br/>SSE"]
+        end
+        
+        API --> Health
+        API --> IncidentsAPI
+        API --> AgentsAPI
+        API --> Alerts
+        API --> Stream
+        
+        subgraph "AI Lifecycle Engine"
+            IncidentsAPI --> Engine["Autonomous<br/>Resolution<br/>Detection → Investigating → Mitigating → Resolved"]
+        end
+        
+        subgraph "Server-Side State"
+            Engine --> State["In-Memory State Engine<br/>Incidents • Agents • Telemetry • Alerts"]
+        end
+        
+        Stream --> State
+    end
+    
+    subgraph "CI/CD Pipeline"
+        CI["GitHub Actions<br/>Auto-deploy on push"]
+    end
+    
+    CI --> Dashboard
+    
+    style Dashboard fill:#0078D4,stroke:#00C2FF,color:#fff
+    style Agents fill:#7B2FBE,stroke:#00C2FF,color:#fff
+    style Incidents fill:#FF4444,stroke:#00C2FF,color:#fff
+    style Analytics fill:#00AA00,stroke:#00C2FF,color:#fff
+    style Engine fill:#FF8800,stroke:#00C2FF,color:#fff,stroke-width:3px
+    style State fill:#1a1a1a,stroke:#00C2FF,color:#fff
+    style Stream fill:#FF4444,stroke:#00C2FF,color:#fff
+    style CI fill:#24292e,stroke:#00C2FF,color:#fff
 ```
 
 ### Architecture Decisions
@@ -157,7 +186,7 @@ Each stage transition generates real-time AI agent logs, telemetry correlations,
 |----------|-----------|
 | **Next.js 15 App Router** | Unified frontend + serverless backend in one deployment unit |
 | **Azure Static Web Apps** | Zero-config HTTPS, global CDN, integrated serverless functions |
-| **SQLite (Demo) / Cosmos DB (Production)** | SQLite for zero-config hackathon demo; Cosmos DB via Prisma MongoDB adapter is the intended production target — globally distributed and natively Azure-integrated |
+| **SQLite (Demo) / Cosmos DB (Production)** | SQLite for zero-config hackathon demo; Cosmos DB via Prisma MongoDB adapter is the intended production target — globally distributed and natively Azure |
 | **Server-Sent Events (SSE)** | Real-time agent log streaming from server to clients without WebSocket overhead |
 | **Server-side lifecycle engine** | Incident progression runs on the server — proving real backend logic, not client-side animation |
 
@@ -504,7 +533,7 @@ Server-Sent Events endpoint. Connect to receive real-time agent logs, status upd
 | **GitHub Copilot** | Code autocompletion and boilerplate generation |
 | **Google Gemini (Antigravity IDE)** | Architecture design, component implementation, API route development, debugging |
 
-All AI-generated code was reviewed, modified, and integrated with human engineering judgment. The autonomous agent lifecycle engine, crisis simulation system, and architecture design represent original creative work built for this hackathon.
+All AI-generated code was reviewed, modified, and integrated with human engineering judgment. The autonomous agent lifecycle engine, crisis simulation system, and architecture design represent original, human-engineered contributions.
 
 ---
 
