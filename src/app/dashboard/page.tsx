@@ -478,14 +478,20 @@ export default function Dashboard() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {swarmAgents.map((agent, idx) => (
                 <motion.div
                   key={agent.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
-                  className="p-4 rounded-lg border border-cs-blue-400/10 bg-cs-dark-700/30 hover:bg-cs-dark-700/50 hover:border-cs-blue-400/20 transition-all flex flex-col justify-between"
+                  className={`
+                    p-4 rounded-lg border transition-all flex flex-col justify-between
+                    ${agent.status === 'offline'
+                      ? 'border-cs-accent-danger/30 hover:border-cs-accent-danger/50 bg-cs-dark-700/20 shadow-glow-red/5'
+                      : 'border-cs-blue-400/10 hover:border-cs-blue-400/20 bg-cs-dark-700/30 hover:bg-cs-dark-700/50'
+                    }
+                  `}
                 >
                   <div>
                     <div className="flex items-start justify-between mb-2">

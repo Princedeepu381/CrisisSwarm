@@ -119,6 +119,14 @@ Respond with a JSON object containing:
 - "confidence": A number 0-100 representing your confidence
 - "recommendations": An array of 2-3 security hardening measures
 Always respond in valid JSON only.`,
+
+  telemetry: `You are the Telemetry Agent in the CrisisSwarm autonomous incident response swarm.
+Your role is to stream real-time system health metrics and monitor performance drift.
+Respond with a JSON object containing:
+- "analysis": A concise telemetry status report (2-3 sentences)
+- "confidence": A number 0-100 representing your confidence
+- "recommendations": An array of 2-3 monitoring enhancements
+Always respond in valid JSON only.`,
 };
 
 // ─── Parse Agent Response ────────────────────────────────────────────────────
@@ -210,6 +218,18 @@ const SIMULATED_RESPONSES: Record<string, (incident: { title: string; severity: 
     ],
     timestamp: new Date().toISOString(),
   }),
+
+  telemetry: (inc) => ({
+    agent: 'Telemetry-Agent',
+    role: 'Telemetry Monitoring',
+    analysis: `Streaming real-time system metrics for ${inc.affected_service}. Verified active CPU, memory, and latency feeds. Telemetry pipelines are healthy, operating at sub-millisecond overhead with zero message loss. Collecting database connection metrics for anomaly correlation.`,
+    confidence: 99,
+    recommendations: [
+      'Enable sub-minute sampling rate on affected resource telemetry streams',
+      'Verify telemetry ingress queue load levels under stress conditions',
+    ],
+    timestamp: new Date().toISOString(),
+  }),
 };
 
 // ─── Public API: Run Full Swarm Analysis ─────────────────────────────────────
@@ -224,13 +244,14 @@ export async function runSwarmAnalysis(incident: {
   const config = getAzureConfig();
   const analyses: AgentAnalysis[] = [];
 
-  const agentOrder = ['analyzer', 'rootcause', 'prediction', 'remediation', 'security'];
+  const agentOrder = ['analyzer', 'rootcause', 'prediction', 'remediation', 'security', 'telemetry'];
   const agentNames: Record<string, string> = {
     analyzer: 'Analyzer-Agent',
     rootcause: 'RootCause-Agent',
     prediction: 'Prediction-Agent',
     remediation: 'Remediation-Agent',
     security: 'Security-Agent',
+    telemetry: 'Telemetry-Agent',
   };
   const agentRoles: Record<string, string> = {
     analyzer: 'Detection & Correlation',
@@ -238,6 +259,7 @@ export async function runSwarmAnalysis(incident: {
     prediction: 'Impact Forecasting',
     remediation: 'Automated Resolution',
     security: 'Post-Incident Verification',
+    telemetry: 'Telemetry Monitoring',
   };
 
   for (const agentKey of agentOrder) {

@@ -68,7 +68,7 @@ export default function NetworkTopology({ agents }: NetworkTopologyProps) {
       name: 'Central Command Hub',
       role: 'Security Gateway',
       status: agents && agents.every(a => a.status === 'offline') ? 'offline' : 'active',
-      connections: ['alpha', 'beta', 'gamma', 'delta', 'epsilon'],
+      connections: ['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta'],
       cpu: 42,
       memory: 58,
       latency: 12,
@@ -83,7 +83,7 @@ export default function NetworkTopology({ agents }: NetworkTopologyProps) {
         const a = agents?.find(x => x.agent_name === 'AutoScaler-Alpha');
         return a ? (a.status === 'offline' ? 'offline' : a.status === 'active' || a.status === 'investigating' ? 'active' : 'idle') : 'active';
       })(),
-      connections: ['hub', 'beta', 'gamma'],
+      connections: ['hub', 'beta', 'gamma', 'zeta'],
       cpu: agents?.find(x => x.agent_name === 'AutoScaler-Alpha')?.cpu_usage ?? 28,
       memory: agents?.find(x => x.agent_name === 'AutoScaler-Alpha')?.memory_usage ?? 35,
       latency: agents?.find(x => x.agent_name === 'AutoScaler-Alpha')?.response_time ?? 45,
@@ -98,7 +98,7 @@ export default function NetworkTopology({ agents }: NetworkTopologyProps) {
         const a = agents?.find(x => x.agent_name === 'MemoryOptimizer-Beta');
         return a ? (a.status === 'offline' ? 'offline' : a.status === 'active' || a.status === 'investigating' ? 'active' : 'idle') : 'active';
       })(),
-      connections: ['hub', 'alpha', 'delta'],
+      connections: ['hub', 'alpha', 'delta', 'zeta'],
       cpu: agents?.find(x => x.agent_name === 'MemoryOptimizer-Beta')?.cpu_usage ?? 52,
       memory: agents?.find(x => x.agent_name === 'MemoryOptimizer-Beta')?.memory_usage ?? 74,
       latency: agents?.find(x => x.agent_name === 'MemoryOptimizer-Beta')?.response_time ?? 85,
@@ -149,6 +149,21 @@ export default function NetworkTopology({ agents }: NetworkTopologyProps) {
       latency: agents?.find(x => x.agent_name === 'ResponseUnit-Epsilon')?.response_time ?? 30,
       x: 200,
       y: 260
+    },
+    {
+      id: 'zeta',
+      name: 'Zeta Node',
+      role: 'Telemetry Agent',
+      status: (() => {
+        const a = agents?.find(x => x.agent_name === 'TelemetryStreamer-Zeta');
+        return a ? (a.status === 'offline' ? 'offline' : a.status === 'active' || a.status === 'investigating' ? 'active' : 'idle') : 'active';
+      })(),
+      connections: ['hub', 'alpha', 'beta'],
+      cpu: agents?.find(x => x.agent_name === 'TelemetryStreamer-Zeta')?.cpu_usage ?? 12,
+      memory: agents?.find(x => x.agent_name === 'TelemetryStreamer-Zeta')?.memory_usage ?? 18,
+      latency: agents?.find(x => x.agent_name === 'TelemetryStreamer-Zeta')?.response_time ?? 120,
+      x: 200,
+      y: 40
     }
   ];
 

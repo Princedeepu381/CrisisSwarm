@@ -369,6 +369,18 @@ export const mockSwarmAgents = [
     memory_usage: 41,
     incidents_handled: 378,
   },
+  {
+    id: '6',
+    agent_name: 'TelemetryStreamer-Zeta',
+    status: 'idle' as const,
+    current_task: 'Streaming system health metrics to dashboard',
+    created_at: new Date(Date.now() - 15000).toISOString(),
+    response_time: 120,
+    success_rate: 99,
+    cpu_usage: 12,
+    memory_usage: 18,
+    incidents_handled: 512,
+  },
 ];
 
 // ─── Dashboard KPIs ───────────────────────────────────────────────────────────

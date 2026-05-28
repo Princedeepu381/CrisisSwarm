@@ -285,6 +285,7 @@ export async function POST(req: Request) {
       'HealthMonitor-Gamma': 'prediction',
       'NetworkDefense-Delta': 'security',
       'ResponseUnit-Epsilon': 'remediation',
+      'TelemetryStreamer-Zeta': 'telemetry',
     };
 
     const agentKey = agentKeyMap[targetAgent.agent_name] || 'analyzer';

@@ -255,6 +255,7 @@ export async function POST(req: Request) {
       'HealthMonitor-Gamma',
       'NetworkDefense-Delta',
       'ResponseUnit-Epsilon',
+      'TelemetryStreamer-Zeta',
     ];
     const chosenAgent = assigned_agent || agentsList[Math.floor(Math.random() * agentsList.length)];
 
