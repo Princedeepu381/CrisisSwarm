@@ -10,7 +10,7 @@ interface IncidentItem {
   severity: 'critical' | 'high' | 'medium' | 'low';
   title: string;
   description: string;
-  status: 'active' | 'investigating' | 'resolved' | 'awaiting_approval';
+  status: 'active' | 'investigating' | 'mitigating' | 'resolved' | 'awaiting_approval';
   created_at: string;
   affected_service?: string;
 }

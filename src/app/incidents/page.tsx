@@ -12,7 +12,7 @@ import { mockIncidents } from '@/lib/mockData';
 
 type MockIncident = typeof mockIncidents[number];
 type Severity = 'critical' | 'high' | 'medium' | 'low';
-type Status   = 'all' | 'active' | 'investigating' | 'resolved' | 'awaiting_approval';
+type Status   = 'all' | 'active' | 'investigating' | 'mitigating' | 'resolved' | 'awaiting_approval';
 
 export default function IncidentsPage() {
   const [incidents, setIncidents] = useState<any[]>(mockIncidents);

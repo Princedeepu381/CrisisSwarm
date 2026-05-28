@@ -1,7 +1,7 @@
 'use client';
 
 interface StatusBadgeProps {
-  status: 'active' | 'idle' | 'investigating' | 'resolved' | 'critical' | 'warning' | 'success' | 'offline' | 'awaiting_approval';
+  status: 'active' | 'idle' | 'investigating' | 'mitigating' | 'resolved' | 'critical' | 'warning' | 'success' | 'offline' | 'awaiting_approval';
   label?: string;
   size?: 'sm' | 'md' | 'lg';
   animate?: boolean;
@@ -38,6 +38,13 @@ const statusConfig: {
     dotColor: 'bg-blue-400',
     icon: 'zap',
     label: 'Investigating',
+  },
+  mitigating: {
+    color: 'text-indigo-400',
+    bgColor: 'bg-indigo-400/10',
+    dotColor: 'bg-indigo-400',
+    icon: 'refresh-cw',
+    label: 'Mitigating',
   },
   resolved: {
     color: 'text-cs-accent-success',

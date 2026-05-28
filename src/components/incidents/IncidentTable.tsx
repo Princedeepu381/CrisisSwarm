@@ -14,7 +14,7 @@ type Incident = Record<string, any> & {
   title: string;
   description: string;
   severity: 'critical' | 'high' | 'medium' | 'low';
-  status: 'active' | 'investigating' | 'resolved' | 'awaiting_approval';
+  status: 'active' | 'investigating' | 'mitigating' | 'resolved' | 'awaiting_approval';
   created_at: string;
   resolved_at: string | null;
   affected_service?: string;
@@ -29,7 +29,7 @@ interface IncidentTableProps {
 }
 
 const SEVERITY_ORDER: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 };
-const STATUS_ORDER:   Record<string, number> = { active: 0, investigating: 1, awaiting_approval: 2, resolved: 3 };
+const STATUS_ORDER:   Record<string, number> = { active: 0, investigating: 1, awaiting_approval: 2, mitigating: 3, resolved: 4 };
 
 const severityConfig: Record<string, { dot: string; row: string; label: string; text: string }> = {
   critical: { dot: 'bg-cs-accent-danger', row: 'border-l-cs-accent-danger/60 bg-cs-accent-danger/5 hover:bg-cs-accent-danger/10',   label: 'bg-cs-accent-danger/20 text-cs-accent-danger border-cs-accent-danger/40',  text: 'text-cs-accent-danger' },

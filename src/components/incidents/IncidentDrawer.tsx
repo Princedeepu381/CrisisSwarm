@@ -14,7 +14,7 @@ interface Incident {
   title: string;
   description: string;
   severity: 'critical' | 'high' | 'medium' | 'low';
-  status: 'active' | 'investigating' | 'resolved' | 'awaiting_approval';
+  status: 'active' | 'investigating' | 'mitigating' | 'resolved' | 'awaiting_approval';
   created_at: string;
   resolved_at: string | null;
   affected_service?: string;
