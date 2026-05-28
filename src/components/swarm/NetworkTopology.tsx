@@ -9,7 +9,7 @@ interface NetworkNode {
   id: string;
   name: string;
   role: string;
-  status: 'active' | 'idle' | 'warning' | 'error';
+  status: 'active' | 'idle' | 'warning' | 'error' | 'offline';
   connections: string[];
   cpu: number;
   memory: number;
@@ -18,13 +18,17 @@ interface NetworkNode {
   y: number;
 }
 
-const nodes: NetworkNode[] = [
-  { id: 'hub', name: 'Central Command Hub', role: 'Security Gateway', status: 'active', connections: ['alpha', 'beta', 'gamma', 'delta'], cpu: 42, memory: 58, latency: 12, x: 200, y: 150 },
-  { id: 'alpha', name: 'Alpha Node', role: 'AutoScaler Unit', status: 'active', connections: ['hub', 'beta'], cpu: 28, memory: 35, latency: 45, x: 90, y: 70 },
-  { id: 'beta', name: 'Beta Node', role: 'Memory Optimizer', status: 'active', connections: ['hub', 'alpha'], cpu: 52, memory: 74, latency: 85, x: 310, y: 70 },
-  { id: 'gamma', name: 'Gamma Node', role: 'Health Monitor', status: 'warning', connections: ['hub', 'delta'], cpu: 78, memory: 65, latency: 120, x: 80, y: 230 },
-  { id: 'delta', name: 'Delta Node', role: 'Network Shield', status: 'active', connections: ['hub', 'gamma'], cpu: 32, memory: 48, latency: 25, x: 320, y: 230 },
-];
+interface NetworkTopologyProps {
+  agents?: {
+    id: string;
+    agent_name: string;
+    status: 'active' | 'idle' | 'investigating' | 'resolved' | 'offline';
+    current_task: string;
+    cpu_usage?: number;
+    memory_usage?: number;
+    response_time?: number;
+  }[];
+}
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -33,6 +37,7 @@ const getStatusColor = (status: string) => {
     case 'warning':
       return 'text-orange-400';
     case 'error':
+    case 'offline':
       return 'text-cs-accent-danger';
     default:
       return 'text-cs-dark-200';
@@ -46,17 +51,108 @@ const getStatusBg = (status: string) => {
     case 'warning':
       return 'bg-orange-400/10 border-orange-400/30';
     case 'error':
+    case 'offline':
       return 'bg-cs-accent-danger/10 border-cs-accent-danger/30';
     default:
       return 'bg-cs-dark-700/50 border-cs-blue-400/10';
   }
 };
 
-export default function NetworkTopology() {
+export default function NetworkTopology({ agents }: NetworkTopologyProps) {
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string>('hub');
 
-  const selectedNode = nodes.find((n) => n.id === selectedNodeId) || nodes[0];
+  const mappedNodes: NetworkNode[] = [
+    {
+      id: 'hub',
+      name: 'Central Command Hub',
+      role: 'Security Gateway',
+      status: agents && agents.every(a => a.status === 'offline') ? 'offline' : 'active',
+      connections: ['alpha', 'beta', 'gamma', 'delta', 'epsilon'],
+      cpu: 42,
+      memory: 58,
+      latency: 12,
+      x: 200,
+      y: 150
+    },
+    {
+      id: 'alpha',
+      name: 'Alpha Node',
+      role: 'AutoScaler Unit',
+      status: (() => {
+        const a = agents?.find(x => x.agent_name === 'AutoScaler-Alpha');
+        return a ? (a.status === 'offline' ? 'offline' : a.status === 'active' || a.status === 'investigating' ? 'active' : 'idle') : 'active';
+      })(),
+      connections: ['hub', 'beta', 'gamma'],
+      cpu: agents?.find(x => x.agent_name === 'AutoScaler-Alpha')?.cpu_usage ?? 28,
+      memory: agents?.find(x => x.agent_name === 'AutoScaler-Alpha')?.memory_usage ?? 35,
+      latency: agents?.find(x => x.agent_name === 'AutoScaler-Alpha')?.response_time ?? 45,
+      x: 90,
+      y: 70
+    },
+    {
+      id: 'beta',
+      name: 'Beta Node',
+      role: 'Memory Optimizer',
+      status: (() => {
+        const a = agents?.find(x => x.agent_name === 'MemoryOptimizer-Beta');
+        return a ? (a.status === 'offline' ? 'offline' : a.status === 'active' || a.status === 'investigating' ? 'active' : 'idle') : 'active';
+      })(),
+      connections: ['hub', 'alpha', 'delta'],
+      cpu: agents?.find(x => x.agent_name === 'MemoryOptimizer-Beta')?.cpu_usage ?? 52,
+      memory: agents?.find(x => x.agent_name === 'MemoryOptimizer-Beta')?.memory_usage ?? 74,
+      latency: agents?.find(x => x.agent_name === 'MemoryOptimizer-Beta')?.response_time ?? 85,
+      x: 310,
+      y: 70
+    },
+    {
+      id: 'gamma',
+      name: 'Gamma Node',
+      role: 'Health Monitor',
+      status: (() => {
+        const a = agents?.find(x => x.agent_name === 'HealthMonitor-Gamma');
+        return a ? (a.status === 'offline' ? 'offline' : a.status === 'active' || a.status === 'investigating' ? 'active' : 'idle') : 'warning';
+      })(),
+      connections: ['hub', 'alpha', 'epsilon'],
+      cpu: agents?.find(x => x.agent_name === 'HealthMonitor-Gamma')?.cpu_usage ?? 78,
+      memory: agents?.find(x => x.agent_name === 'HealthMonitor-Gamma')?.memory_usage ?? 65,
+      latency: agents?.find(x => x.agent_name === 'HealthMonitor-Gamma')?.response_time ?? 120,
+      x: 80,
+      y: 230
+    },
+    {
+      id: 'delta',
+      name: 'Delta Node',
+      role: 'Network Shield',
+      status: (() => {
+        const a = agents?.find(x => x.agent_name === 'NetworkDefense-Delta');
+        return a ? (a.status === 'offline' ? 'offline' : a.status === 'active' || a.status === 'investigating' ? 'active' : 'idle') : 'active';
+      })(),
+      connections: ['hub', 'beta', 'epsilon'],
+      cpu: agents?.find(x => x.agent_name === 'NetworkDefense-Delta')?.cpu_usage ?? 32,
+      memory: agents?.find(x => x.agent_name === 'NetworkDefense-Delta')?.memory_usage ?? 48,
+      latency: agents?.find(x => x.agent_name === 'NetworkDefense-Delta')?.response_time ?? 25,
+      x: 320,
+      y: 230
+    },
+    {
+      id: 'epsilon',
+      name: 'Epsilon Node',
+      role: 'Response Unit',
+      status: (() => {
+        const a = agents?.find(x => x.agent_name === 'ResponseUnit-Epsilon');
+        return a ? (a.status === 'offline' ? 'offline' : a.status === 'active' || a.status === 'investigating' ? 'active' : 'idle') : 'active';
+      })(),
+      connections: ['hub', 'gamma', 'delta'],
+      cpu: agents?.find(x => x.agent_name === 'ResponseUnit-Epsilon')?.cpu_usage ?? 35,
+      memory: agents?.find(x => x.agent_name === 'ResponseUnit-Epsilon')?.memory_usage ?? 41,
+      latency: agents?.find(x => x.agent_name === 'ResponseUnit-Epsilon')?.response_time ?? 30,
+      x: 200,
+      y: 260
+    }
+  ];
+
+  const selectedNode = mappedNodes.find((n) => n.id === selectedNodeId) || mappedNodes[0];
 
   return (
     <GlassCard className="p-6 h-full flex flex-col justify-between" hover={false}>
@@ -86,9 +182,9 @@ export default function NetworkTopology() {
 
           <svg viewBox="0 0 400 300" className="w-full h-full max-h-[300px] select-none">
             {/* Draw connections */}
-            {nodes.flatMap((node) =>
+            {mappedNodes.flatMap((node) =>
               node.connections.map((targetId) => {
-                const target = nodes.find((n) => n.id === targetId);
+                const target = mappedNodes.find((n) => n.id === targetId);
                 if (!target || node.id > targetId) return null; // Avoid duplicate lines
 
                 const isPathActive =
@@ -131,7 +227,7 @@ export default function NetworkTopology() {
             )}
 
             {/* Draw nodes */}
-            {nodes.map((node) => {
+            {mappedNodes.map((node) => {
               const isSelected = selectedNodeId === node.id;
               const isHovered = hoveredNodeId === node.id;
               const statusColor =

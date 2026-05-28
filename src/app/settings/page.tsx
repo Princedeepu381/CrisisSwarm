@@ -145,7 +145,7 @@ export default function SettingsPage() {
   // Agent settings
   const [agents, setAgents] = useState({
     autoScaling:     true,
-    autoRemediation: false, // Start false so the user experiences human-in-the-loop approval
+    autoRemediation: true, // Start true so that it runs autonomously by default!
     anomalyDetect:   true,
     reportGeneration: false,
     maintenanceMode: false,

@@ -19,8 +19,11 @@ export async function GET(): Promise<Response> {
 
   const encoder = new TextEncoder();
 
+  let currentController: ReadableStreamDefaultController | null = null;
+
   const stream = new ReadableStream({
     start(controller) {
+      currentController = controller;
       getSseClients().add(controller);
 
       // Send initial connection event
@@ -59,15 +62,19 @@ export async function GET(): Promise<Response> {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(hb)}\n\n`));
         } catch {
           clearInterval(heartbeat);
-          getSseClients().delete(controller);
+          if (currentController) {
+            getSseClients().delete(currentController);
+          }
         }
       }, 15000);
 
       // Flush to confirm open
       controller.enqueue(encoder.encode(`:ok\n\n`));
     },
-    cancel(controller) {
-      getSseClients().delete(controller as unknown as ReadableStreamDefaultController);
+    cancel() {
+      if (currentController) {
+        getSseClients().delete(currentController);
+      }
     },
   });
 

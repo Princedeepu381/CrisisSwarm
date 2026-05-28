@@ -204,7 +204,7 @@ export default function Agents() {
             <SwarmStatusPanel agents={agents} />
           </div>
           <div className="lg:col-span-2">
-            <NetworkTopology />
+            <NetworkTopology agents={agents} />
           </div>
         </motion.div>
 

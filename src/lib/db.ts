@@ -156,7 +156,7 @@ if (!globalForDb.db) {
     agentHeatmap: JSON.parse(JSON.stringify(mockAgentHeatmap)),
     settings: {
       autoScaling: true,
-      autoRemediation: false, // Default to false so that judges see the human-in-the-loop approval prompt!
+      autoRemediation: true, // Default to true so that it runs autonomously by default!
       anomalyDetect: true,
       reportGeneration: false,
       maintenanceMode: false,

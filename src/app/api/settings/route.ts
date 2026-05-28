@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     db.settings = {
       // AI Agent Behaviour
       autoScaling:      body.autoScaling !== undefined ? !!body.autoScaling : true,
-      autoRemediation:  !!body.autoRemediation,
+      autoRemediation:  body.autoRemediation !== undefined ? !!body.autoRemediation : true,
       anomalyDetect:    body.anomalyDetect !== undefined ? !!body.anomalyDetect : true,
       reportGeneration: !!body.reportGeneration,
       maintenanceMode:  !!body.maintenanceMode,
