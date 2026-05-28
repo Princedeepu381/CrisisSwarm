@@ -151,9 +151,9 @@ export default function AzureMonitorPanel() {
             { method: 'GET', path: '/',       label: 'App Status',      active: true  },
             { method: 'GET', path: '/health', label: 'Health Check',    active: true  },
             { method: 'GET', path: '/error',  label: 'Alert Simulator', active: true  },
-            { method: 'GET', path: '/api/incidents', label: 'Incidents API', active: false },
-            { method: 'GET', path: '/api/metrics',   label: 'Metrics API',   active: false },
-            { method: 'GET', path: '/api/agents',    label: 'Agents API',    active: false },
+            { method: 'GET', path: '/api/incidents', label: 'Incidents API', active: true },
+            { method: 'GET', path: '/api/telemetry', label: 'Telemetry API', active: true },
+            { method: 'GET', path: '/api/agents',    label: 'Agents API',    active: true },
           ].map((ep) => (
             <div key={ep.path} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs ${ep.active ? 'bg-cs-dark-700/40' : 'bg-cs-dark-800/30 opacity-50'}`}>
               <span className={`font-mono font-bold text-[10px] px-1.5 py-0.5 rounded ${ep.active ? 'bg-cs-accent-success/20 text-cs-accent-success' : 'bg-cs-dark-700 text-cs-dark-200'}`}>
