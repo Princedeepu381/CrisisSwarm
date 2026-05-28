@@ -163,15 +163,36 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetch('/api/settings')
-      .then((res) => res.json())
-      .then((data) => {
+      .then((res: any) => res.json())
+      .then((data: any) => {
         if (data) {
+          setNotifs({
+            criticalAlerts: data.criticalAlerts !== undefined ? !!data.criticalAlerts : true,
+            highAlerts:     data.highAlerts !== undefined ? !!data.highAlerts : true,
+            mediumAlerts:   !!data.mediumAlerts,
+            emailDigest:    data.emailDigest !== undefined ? !!data.emailDigest : true,
+            slackWebhook:   !!data.slackWebhook,
+            smsAlerts:      !!data.smsAlerts,
+          });
+          setThresholds({
+            cpu:          data.cpu !== undefined ? Number(data.cpu) : 80,
+            memory:       data.memory !== undefined ? Number(data.memory) : 85,
+            responseTime: data.responseTime !== undefined ? Number(data.responseTime) : 300,
+            errorRate:    data.errorRate !== undefined ? Number(data.errorRate) : 1.0,
+            diskUsage:    data.diskUsage !== undefined ? Number(data.diskUsage) : 90,
+          });
           setAgents({
-            autoScaling: !!data.autoScaling,
-            autoRemediation: !!data.autoRemediation,
-            anomalyDetect: !!data.anomalyDetect,
+            autoScaling:      data.autoScaling !== undefined ? !!data.autoScaling : true,
+            autoRemediation:  !!data.autoRemediation,
+            anomalyDetect:    data.anomalyDetect !== undefined ? !!data.anomalyDetect : true,
             reportGeneration: !!data.reportGeneration,
-            maintenanceMode: !!data.maintenanceMode,
+            maintenanceMode:  !!data.maintenanceMode,
+          });
+          setPrefs({
+            autoRefresh:    data.autoRefresh !== undefined ? !!data.autoRefresh : true,
+            soundAlerts:    !!data.soundAlerts,
+            compactMode:    !!data.compactMode,
+            showTimestamps: data.showTimestamps !== undefined ? !!data.showTimestamps : true,
           });
         }
       })
@@ -180,13 +201,25 @@ export default function SettingsPage() {
 
   async function handleSave() {
     try {
+      const payload = {
+        ...notifs,
+        ...thresholds,
+        ...agents,
+        ...prefs,
+      };
       const res = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(agents),
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
         setSaved(true);
+        // Apply compact mode change immediately on save
+        if (prefs.compactMode) {
+          document.documentElement.classList.add('compact-mode');
+        } else {
+          document.documentElement.classList.remove('compact-mode');
+        }
         setTimeout(() => setSaved(false), 2500);
       }
     } catch (e) {

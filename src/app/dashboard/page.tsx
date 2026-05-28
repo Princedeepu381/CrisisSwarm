@@ -12,6 +12,7 @@ import GlassCard from '@/components/common/GlassCard';
 import StatusBadge from '@/components/common/StatusBadge';
 import AzureInsightsSummary from '@/components/azure/AzureInsightsSummary';
 import * as LucideIcons from 'lucide-react';
+import { playAlertChime } from '@/utils/audio';
 import {
   mockMetrics,
   mockIncidents,
@@ -95,6 +96,10 @@ export default function Dashboard() {
     'Swarm behavior normal. Predictive analysis suggests 99.9% availability for the next 2 hours.'
   );
 
+  const [soundAlertsEnabled, setSoundAlertsEnabled] = useState(false);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
+  const [showTimestamps, setShowTimestamps] = useState(false);
+
   const fetchData = useCallback(async (showRefreshingState = false) => {
     if (showRefreshingState) setIsRefreshing(true);
     try {
@@ -118,7 +123,23 @@ export default function Dashboard() {
         });
       }
 
-      if (resIncidents) setIncidents(resIncidents);
+      if (resIncidents) {
+        setIncidents((prev) => {
+          const prevActiveIds = new Set(
+            prev
+              .filter((i: any) => i.status !== 'resolved' && (i.severity === 'critical' || i.severity === 'high'))
+              .map((i: any) => i.id)
+          );
+          const hasNewIncident = resIncidents
+            .filter((i: any) => i.status !== 'resolved' && (i.severity === 'critical' || i.severity === 'high'))
+            .some((i: any) => !prevActiveIds.has(i.id));
+
+          if (hasNewIncident && soundAlertsEnabled) {
+            playAlertChime();
+          }
+          return resIncidents;
+        });
+      }
       if (resTelemetry) setTelemetryData(resTelemetry);
       if (resAlerts) setAlerts(resAlerts);
       if (resAgents && resAgents.agents) setSwarmAgents(resAgents.agents);
@@ -129,7 +150,7 @@ export default function Dashboard() {
         setTimeout(() => setIsRefreshing(false), 500);
       }
     }
-  }, []);
+  }, [soundAlertsEnabled]);
 
   // ─── Simulate Crisis Handler ─────────────────────────────────────────────────
   const handleSimulateCrisis = async () => {
@@ -204,11 +225,25 @@ export default function Dashboard() {
   }, [incidents, alerts]);
 
   useEffect(() => {
+    fetch('/api/settings')
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        if (data) {
+          setSoundAlertsEnabled(!!data.soundAlerts);
+          setAutoRefreshEnabled(data.autoRefresh !== undefined ? !!data.autoRefresh : true);
+          setShowTimestamps(!!data.showTimestamps);
+        }
+      })
+      .catch((e) => console.error('Failed to load settings in dashboard:', e));
+  }, []);
+
+  useEffect(() => {
     fetchData();
+    if (!autoRefreshEnabled) return;
     // Poll every 4 seconds for real-time feel
     const interval = setInterval(() => fetchData(false), 4000);
     return () => clearInterval(interval);
-  }, [fetchData]);
+  }, [fetchData, autoRefreshEnabled]);
 
   return (
     <MainLayout>
@@ -366,6 +401,7 @@ export default function Dashboard() {
               incidents={incidents}
               onApprove={handleApproveRemediation}
               onReject={handleRejectRemediation}
+              showTimestamps={showTimestamps}
             />
           </div>
 

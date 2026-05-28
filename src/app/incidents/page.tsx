@@ -8,6 +8,7 @@ import IncidentFilters from '@/components/incidents/IncidentFilters';
 import IncidentTable from '@/components/incidents/IncidentTable';
 import IncidentDrawer from '@/components/incidents/IncidentDrawer';
 import * as LucideIcons from 'lucide-react';
+import { playAlertChime } from '@/utils/audio';
 import { mockIncidents } from '@/lib/mockData';
 
 type MockIncident = typeof mockIncidents[number];
@@ -30,12 +31,29 @@ export default function IncidentsPage() {
   const [impact, setImpact] = useState('Medium');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [soundAlertsEnabled, setSoundAlertsEnabled] = useState(false);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
+
   const fetchIncidents = useCallback(async () => {
     try {
       const res = await fetch('/api/incidents');
       if (res.ok) {
-        const data = await res.json();
-        setIncidents(data);
+        const data: any = await (res as any).json();
+        setIncidents((prev) => {
+          const prevActiveIds = new Set(
+            prev
+              .filter((i: any) => i.status !== 'resolved' && (i.severity === 'critical' || i.severity === 'high'))
+              .map((i: any) => i.id)
+          );
+          const hasNewIncident = data
+            .filter((i: any) => i.status !== 'resolved' && (i.severity === 'critical' || i.severity === 'high'))
+            .some((i: any) => !prevActiveIds.has(i.id));
+
+          if (hasNewIncident && soundAlertsEnabled) {
+            playAlertChime();
+          }
+          return data;
+        });
         
         // If an incident is currently open, refresh its data too
         setSelectedIncident((curr: any) => {
@@ -46,16 +64,27 @@ export default function IncidentsPage() {
       }
     } catch (e) {
       console.error('Error fetching incidents:', e);
-    } finally {
-      // Loading finished
     }
+  }, [soundAlertsEnabled]);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        if (data) {
+          setSoundAlertsEnabled(!!data.soundAlerts);
+          setAutoRefreshEnabled(data.autoRefresh !== undefined ? !!data.autoRefresh : true);
+        }
+      })
+      .catch((e) => console.error('Failed to load settings in incidents page:', e));
   }, []);
 
   useEffect(() => {
     fetchIncidents();
+    if (!autoRefreshEnabled) return;
     const interval = setInterval(fetchIncidents, 8000);
     return () => clearInterval(interval);
-  }, [fetchIncidents]);
+  }, [fetchIncidents, autoRefreshEnabled]);
 
   function toggleSeverity(s: Severity) {
     setSelectedSeverities((prev) =>

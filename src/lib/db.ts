@@ -119,6 +119,21 @@ export interface DbSchema {
     anomalyDetect: boolean;
     reportGeneration: boolean;
     maintenanceMode: boolean;
+    criticalAlerts: boolean;
+    highAlerts: boolean;
+    mediumAlerts: boolean;
+    emailDigest: boolean;
+    slackWebhook: boolean;
+    smsAlerts: boolean;
+    cpu: number;
+    memory: number;
+    responseTime: number;
+    errorRate: number;
+    diskUsage: number;
+    autoRefresh: boolean;
+    soundAlerts: boolean;
+    compactMode: boolean;
+    showTimestamps: boolean;
   };
 }
 
@@ -145,6 +160,21 @@ if (!globalForDb.db) {
       anomalyDetect: true,
       reportGeneration: false,
       maintenanceMode: false,
+      criticalAlerts: true,
+      highAlerts: true,
+      mediumAlerts: false,
+      emailDigest: true,
+      slackWebhook: false,
+      smsAlerts: false,
+      cpu: 80,
+      memory: 85,
+      responseTime: 300,
+      errorRate: 1.0,
+      diskUsage: 90,
+      autoRefresh: true,
+      soundAlerts: false,
+      compactMode: false,
+      showTimestamps: true,
     },
     commands: [
       {

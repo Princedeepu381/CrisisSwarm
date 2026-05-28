@@ -31,6 +31,21 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [pathname, router]);
 
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        if (data) {
+          if (data.compactMode) {
+            document.documentElement.classList.add('compact-mode');
+          } else {
+            document.documentElement.classList.remove('compact-mode');
+          }
+        }
+      })
+      .catch((e) => console.error('Failed to load settings in AuthGuard:', e));
+  }, [pathname]);
+
   if (!authorized) {
     // Minimal splash while redirecting — prevents flash of protected content
     return (

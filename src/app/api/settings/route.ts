@@ -7,13 +7,35 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const body: any = await req.json();
     db.settings = {
-      autoScaling: !!body.autoScaling,
-      autoRemediation: !!body.autoRemediation,
-      anomalyDetect: !!body.anomalyDetect,
+      // AI Agent Behaviour
+      autoScaling:      body.autoScaling !== undefined ? !!body.autoScaling : true,
+      autoRemediation:  !!body.autoRemediation,
+      anomalyDetect:    body.anomalyDetect !== undefined ? !!body.anomalyDetect : true,
       reportGeneration: !!body.reportGeneration,
-      maintenanceMode: !!body.maintenanceMode,
+      maintenanceMode:  !!body.maintenanceMode,
+      
+      // Notification Preferences
+      criticalAlerts:  body.criticalAlerts !== undefined ? !!body.criticalAlerts : true,
+      highAlerts:      body.highAlerts !== undefined ? !!body.highAlerts : true,
+      mediumAlerts:    !!body.mediumAlerts,
+      emailDigest:     body.emailDigest !== undefined ? !!body.emailDigest : true,
+      slackWebhook:    !!body.slackWebhook,
+      smsAlerts:       !!body.smsAlerts,
+
+      // Alert Thresholds
+      cpu:          body.cpu !== undefined ? Number(body.cpu) : 80,
+      memory:       body.memory !== undefined ? Number(body.memory) : 85,
+      responseTime: body.responseTime !== undefined ? Number(body.responseTime) : 300,
+      errorRate:    body.errorRate !== undefined ? Number(body.errorRate) : 1.0,
+      diskUsage:    body.diskUsage !== undefined ? Number(body.diskUsage) : 90,
+
+      // Display Preferences
+      autoRefresh:    body.autoRefresh !== undefined ? !!body.autoRefresh : true,
+      soundAlerts:    !!body.soundAlerts,
+      compactMode:    !!body.compactMode,
+      showTimestamps: body.showTimestamps !== undefined ? !!body.showTimestamps : true,
     };
     return NextResponse.json({ success: true, settings: db.settings });
   } catch (err) {

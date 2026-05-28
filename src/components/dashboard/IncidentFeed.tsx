@@ -19,6 +19,7 @@ interface IncidentFeedProps {
   incidents: IncidentItem[];
   onApprove?: (id: string) => void;
   onReject?: (id: string) => void;
+  showTimestamps?: boolean;
 }
 
 const severityConfig: {
@@ -30,7 +31,7 @@ const severityConfig: {
   low: { color: 'text-cs-blue-400', bgColor: 'bg-cs-blue-400/10', icon: 'info' },
 };
 
-export default function IncidentFeed({ incidents, onApprove, onReject }: IncidentFeedProps) {
+export default function IncidentFeed({ incidents, onApprove, onReject, showTimestamps = false }: IncidentFeedProps) {
   return (
     <GlassCard className="p-6">
       <div className="mb-6">
@@ -87,14 +88,16 @@ export default function IncidentFeed({ incidents, onApprove, onReject }: Inciden
                     <div className="flex items-center gap-1 text-cs-dark-200 opacity-60">
                       <LucideIcons.Clock className="w-3 h-3" />
                       <span>
-                        {(() => {
-                          const now = new Date();
-                          const date = new Date(incident.created_at);
-                          const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-                          if (seconds < 60) return `${seconds}s ago`;
-                          if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-                          return `${Math.floor(seconds / 3600)}h ago`;
-                        })()}
+                        {showTimestamps
+                          ? new Date(incident.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+                          : (() => {
+                              const now = new Date();
+                              const date = new Date(incident.created_at);
+                              const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+                              if (seconds < 60) return `${seconds}s ago`;
+                              if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+                              return `${Math.floor(seconds / 3600)}h ago`;
+                            })()}
                       </span>
                     </div>
                   </div>
