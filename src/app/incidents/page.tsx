@@ -38,17 +38,18 @@ export default function IncidentsPage() {
         setIncidents(data);
         
         // If an incident is currently open, refresh its data too
-        if (selectedIncident) {
-          const updated = data.find((i: any) => i.id === selectedIncident.id);
-          if (updated) setSelectedIncident(updated);
-        }
+        setSelectedIncident((curr: any) => {
+          if (!curr) return null;
+          const updated = data.find((i: any) => i.id === curr.id);
+          return updated || null;
+        });
       }
     } catch (e) {
       console.error('Error fetching incidents:', e);
     } finally {
       // Loading finished
     }
-  }, [selectedIncident]);
+  }, []);
 
   useEffect(() => {
     fetchIncidents();
