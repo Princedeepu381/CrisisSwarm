@@ -530,8 +530,8 @@ Server-Sent Events endpoint. Connect to receive real-time agent logs, status upd
 
 | Tool | Usage |
 |------|-------|
-| **GitHub Copilot** | Code autocompletion and boilerplate generation |
-| **Google Gemini (Antigravity IDE)** | Architecture design, component implementation, API route development, debugging |
+| **GitHub Copilot** | Code autocompletion and boilerplate generation Architecture design, component implementation, API route development, debugging |
+
 
 All AI-generated code was reviewed, modified, and integrated with human engineering judgment. The autonomous agent lifecycle engine, crisis simulation system, and architecture design represent original, human-engineered contributions.
 
@@ -541,7 +541,7 @@ All AI-generated code was reviewed, modified, and integrated with human engineer
 
 | Name | Role |
 |------|------|
-| **Princedeepu381** | Full-Stack Developer & Project Lead |
+| **Deepak_M** | Full-Stack Developer & Project Lead |
 
 ---
 
