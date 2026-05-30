@@ -11,7 +11,7 @@
 
 <br/>
 
-[![Azure](https://img.shields.io/badge/Azure-Deployed-0078D4?style=flat-square&logo=microsoftazure&logoColor=white)](https://calm-ocean-08f5d1400.7.azurestaticapps.net)
+[![Azure](https://img.shields.io/badge/Azure-Deployed-0078D4?style=flat-square&logo=microsoftazure&logoColor=white)](https://delightful-island-0a4852700.7.azurestaticapps.net)
 [![Next.js](https://img.shields.io/badge/Next.js%2015-Framework-000000?style=flat-square&logo=nextdotjs)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![License](https://img.shields.io/badge/License-Hackathon-green?style=flat-square)](https://github.com/Princedeepu381/CrisisSwarm)
@@ -23,7 +23,7 @@
 
 <br/>
 
-🔗 **[Live Demo](https://calm-ocean-08f5d1400.7.azurestaticapps.net)** &nbsp;·&nbsp; 📂 **[Repository](https://github.com/Princedeepu381/CrisisSwarm)** &nbsp;·&nbsp; 🎯 **[Pitch Deck](Crisis%20Swarms.pdf)**
+🔗 **[Live Demo](https://delightful-island-0a4852700.7.azurestaticapps.net)** &nbsp;·&nbsp; 📂 **[Repository](https://github.com/Princedeepu381/CrisisSwarm)** &nbsp;·&nbsp; 🎯 **[Pitch Deck](https://github.com/Princedeepu381/CrisisSwarm)**
 
 </div>
 
@@ -51,7 +51,7 @@
 
 ## 🎥 Live Demo Walkthrough
 
-**[→ Open Live Demo](https://calm-ocean-08f5d1400.7.azurestaticapps.net)**
+**[→ Open Live Demo](https://delightful-island-0a4852700.7.azurestaticapps.net)**
 
 Follow these steps to experience the full autonomous incident response lifecycle in **~60 seconds**:
 
@@ -73,11 +73,11 @@ Follow these steps to experience the full autonomous incident response lifecycle
 ## 🎯 Problem Statement
 ### Theme 2: Security in the Agentic Future
 
-Modern cloud infrastructure failures cost enterprises an average of **$5,600 per minute** of downtime (Gartner). Current incident response systems rely heavily on human operators who must manually retrieve logs, correlate signals, and execute remediations across distributed systems.
+Modern cloud infrastructure failures cost enterprises an average of **$5,600 per minute** of downtime (Gartner). Current incident response systems rely heavily on human operators who must manually retrieve alerts, correlate signals, diagnose root causes, and execute fixes — a tedious process vulnerable to human error and delays.
 
 ### The Swarm Deficit
 
-While single AI agents can assist with individual tasks, a single agent lacks the multi-domain capabilities to handle the entire incident lifecycle alone. Production-grade autonomous operations require specialized roles:
+While single AI agents can assist with individual tasks, a single agent lacks the multi-domain capabilities to handle the entire incident lifecycle alone. Production-grade autonomous operations require a **specialized agent swarm**:
 
 1. **Retrievers** — continuously ingest and filter multi-region telemetry noise
 2. **Planners** — diagnose root causes across complex distributed dependency graphs
@@ -532,8 +532,7 @@ Server-Sent Events endpoint. Connect to receive real-time agent logs, status upd
 |------|-------|
 | **GitHub Copilot** | Code autocompletion and boilerplate generation Architecture design, component implementation, API route development, debugging |
 
-
-All AI-generated code was reviewed, modified, and integrated with human engineering judgment. The autonomous agent lifecycle engine, crisis simulation system, and architecture design represent original, human-engineered contributions.
+All AI-generated code was reviewed, modified, and integrated with human engineering judgment. The autonomous agent lifecycle engine, crisis simulation system, and architecture design represent original human engineering.
 
 ---
 
@@ -559,6 +558,6 @@ This project was built for the **Microsoft Build AI Hackathon 2026**. All intell
 
 <br/>
 
-[![Live Demo](https://img.shields.io/badge/🔗_Live_Demo-calm--ocean--08f5d1400.7.azurestaticapps.net-0078D4?style=for-the-badge)](https://calm-ocean-08f5d1400.7.azurestaticapps.net)
+[![Live Demo](https://img.shields.io/badge/🔗_Live_Demo-delightful--island--0a4852700.7.azurestaticapps.net-0078D4?style=for-the-badge)](https://delightful-island-0a4852700.7.azurestaticapps.net)
 
 </div>
