@@ -23,7 +23,7 @@
 
 <br/>
 
-🔗 **[Live Demo](https://calm-ocean-08f5d1400.7.azurestaticapps.net)** &nbsp;·&nbsp; 📂 **[Repository](https://github.com/Princedeepu381/CrisisSwarm)** &nbsp;·&nbsp; 🎯 **[Pitch Deck](/Crisis\ Swarms.pdf)**
+🔗 **[Live Demo](https://calm-ocean-08f5d1400.7.azurestaticapps.net)** &nbsp;·&nbsp; 📂 **[Repository](https://github.com/Princedeepu381/CrisisSwarm)** &nbsp;·&nbsp; 🎯 **[Pitch Deck](Crisis%20Swarms.pdf)**
 
 </div>
 
